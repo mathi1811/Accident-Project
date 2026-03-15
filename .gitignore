@@ -9,6 +9,9 @@ project_env/
 runs/
 !runs/accident_detector2/weights/best.pt
 
+# Logs (may contain secrets)
+runs/reports.csv
+
 # MacOS
 .DS_Store
 
