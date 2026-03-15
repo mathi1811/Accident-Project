@@ -32,9 +32,14 @@ st.markdown("""
         padding: 0;
     }
 
-    /* Remove default Streamlit padding and margins */
+    /* App container with subtle colored background */
     .block-container {
-        background: rgba(255, 255, 255, 0.95);
+        background: linear-gradient(135deg,
+            rgba(240, 248, 255, 0.95) 0%,
+            rgba(248, 250, 252, 0.95) 25%,
+            rgba(255, 250, 240, 0.95) 50%,
+            rgba(248, 252, 248, 0.95) 75%,
+            rgba(252, 248, 255, 0.95) 100%);
         border-radius: 0;
         margin: 0;
         padding: 20px;
@@ -43,6 +48,19 @@ st.markdown("""
         backdrop-filter: blur(10px);
         width: 100%;
         max-width: none;
+        position: relative;
+    }
+
+    .block-container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="subtle-pattern" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="1" fill="rgba(0,123,255,0.05)"/><circle cx="10" cy="10" r="0.3" fill="rgba(40,167,69,0.03)"/></pattern></defs><rect width="100" height="100" fill="url(%23subtle-pattern)"/></svg>');
+        opacity: 0.3;
+        pointer-events: none;
     }
 
     /* Title with clean, readable styling */
@@ -95,18 +113,116 @@ st.markdown("""
         line-height: 1.4;
     }
     
-    /* Enhanced card styling with background images */
-    .card {
-        background: linear-gradient(145deg, rgba(255,255,255,0.95), rgba(248,249,250,0.95));
+    /* Special styling for How it Works section */
+    .how-it-works-card {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(240, 248, 255, 0.9));
         border-radius: 20px;
         padding: 30px;
         margin: 20px 0;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 10px 30px rgba(0, 123, 255, 0.15);
         border: none;
         transition: transform 0.4s ease, box-shadow 0.4s ease;
         position: relative;
         overflow: hidden;
         backdrop-filter: blur(10px);
+        border-left: 8px solid #007bff;
+    }
+
+    .how-it-works-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="workflow" width="25" height="25" patternUnits="userSpaceOnUse"><circle cx="12.5" cy="12.5" r="3" fill="none" stroke="rgba(0,123,255,0.1)" stroke-width="1"/><path d="M12.5 6.5 L12.5 18.5 M6.5 12.5 L18.5 12.5" stroke="rgba(0,123,255,0.1)" stroke-width="1"/><text x="12.5" y="16" text-anchor="middle" font-size="6" fill="rgba(0,123,255,0.2)">→</text></pattern></defs><rect width="100" height="100" fill="url(%23workflow)"/></svg>');
+        opacity: 0.4;
+        z-index: 1;
+    }
+
+    .how-it-works-card:hover {
+        transform: translateY(-5px) scale(1.02);
+        box-shadow: 0 15px 40px rgba(0, 123, 255, 0.25);
+    }
+
+    .how-it-works-card > * {
+        position: relative;
+        z-index: 2;
+    }
+
+    /* Special styling for Features section */
+    .features-card {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(240, 255, 240, 0.9));
+        border-radius: 20px;
+        padding: 30px;
+        margin: 20px 0;
+        box-shadow: 0 10px 30px rgba(40, 167, 69, 0.15);
+        border: none;
+        transition: transform 0.4s ease, box-shadow 0.4s ease;
+        position: relative;
+        overflow: hidden;
+        backdrop-filter: blur(10px);
+        border-left: 8px solid #28a745;
+    }
+
+    .features-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="features" width="30" height="30" patternUnits="userSpaceOnUse"><circle cx="15" cy="15" r="4" fill="none" stroke="rgba(40,167,69,0.1)" stroke-width="2"/><path d="M10 15 L13 18 L20 11" stroke="rgba(40,167,69,0.2)" stroke-width="2" fill="none"/><circle cx="15" cy="15" r="1" fill="rgba(40,167,69,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23features)"/></svg>');
+        opacity: 0.4;
+        z-index: 1;
+    }
+
+    .features-card:hover {
+        transform: translateY(-5px) scale(1.02);
+        box-shadow: 0 15px 40px rgba(40, 167, 69, 0.25);
+    }
+
+    .features-card > * {
+        position: relative;
+        z-index: 2;
+    }
+
+    /* Enhanced list styling */
+    .how-it-works-card ol {
+        padding-left: 20px;
+    }
+
+    .how-it-works-card li {
+        margin-bottom: 15px;
+        padding: 10px 15px;
+        background: rgba(0, 123, 255, 0.05);
+        border-radius: 8px;
+        border-left: 4px solid #007bff;
+        transition: all 0.3s ease;
+    }
+
+    .how-it-works-card li:hover {
+        background: rgba(0, 123, 255, 0.1);
+        transform: translateX(5px);
+    }
+
+    .features-card ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    .features-card li {
+        margin-bottom: 12px;
+        padding: 8px 12px;
+        background: rgba(40, 167, 69, 0.05);
+        border-radius: 6px;
+        border-left: 4px solid #28a745;
+        transition: all 0.3s ease;
+    }
+
+    .features-card li:hover {
+        background: rgba(40, 167, 69, 0.1);
+        transform: translateX(5px);
     }
 
     .card::before {
@@ -569,7 +685,7 @@ col1, col2 = st.columns([2, 1])
 
 with col1:
     st.markdown("""
-    <div class="card">
+    <div class="how-it-works-card">
         <h3 style="color: #007bff; margin-top: 0;">📋 How it works:</h3>
         <ol>
             <li><strong>📤 Upload</strong> an image containing a vehicle</li>
@@ -582,7 +698,7 @@ with col1:
 
 with col2:
     st.markdown("""
-    <div class="card card-success">
+    <div class="features-card">
         <h4 style="color: #28a745; margin-top: 0;">✅ Features:</h4>
         <ul style="margin-bottom: 0;">
             <li>🎯 Real-time accident detection</li>
