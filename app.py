@@ -63,54 +63,108 @@ st.markdown("""
         pointer-events: none;
     }
 
-    /* Title with clean, readable styling */
+    /* Title with vibrant, attractive styling */
     .title {
-        font-size: 3.2em;
+        font-size: 3.5em;
         font-weight: 900;
         text-align: center;
-        margin-bottom: 20px;
-        color: #ffffff;
-        text-shadow:
-            3px 3px 0px #dc3545,
-            6px 6px 0px rgba(220, 53, 69, 0.5),
-            9px 9px 20px rgba(0, 0, 0, 0.8);
-        background: linear-gradient(45deg, #ffffff 0%, #f8f9fa 50%, #ffffff 100%);
+        margin-bottom: 25px;
+        background: linear-gradient(45deg, #ff6b6b, #ffd93d, #6bcf7f, #4d96ff, #9b59b6);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
-        padding: 20px;
-        border-radius: 15px;
-        background-color: rgba(220, 53, 69, 0.9);
-        border: 4px solid #ffffff;
+        text-shadow:
+            0 0 20px rgba(255, 107, 107, 0.5),
+            0 0 40px rgba(255, 217, 61, 0.3),
+            0 0 60px rgba(107, 207, 127, 0.3),
+            0 0 80px rgba(77, 150, 255, 0.3);
+        padding: 25px 30px;
+        border-radius: 20px;
+        background-color: rgba(0, 0, 0, 0.8);
+        border: 3px solid;
+        border-image: linear-gradient(45deg, #ff6b6b, #ffd93d, #6bcf7f, #4d96ff) 1;
         display: inline-block;
         width: 100%;
         box-sizing: border-box;
-        font-family: 'Arial Black', 'Arial Bold', Arial, sans-serif;
-        letter-spacing: 2px;
-        line-height: 1.2;
+        font-family: 'Arial Black', 'Impact', 'Helvetica Bold', Arial, sans-serif;
+        letter-spacing: 3px;
+        line-height: 1.1;
+        animation: rainbow-glow 3s ease-in-out infinite alternate;
+        position: relative;
     }
 
-    @keyframes pulse {
-        from { transform: scale(1); }
-        to { transform: scale(1.02); }
+    .title::before {
+        content: '🚨';
+        position: absolute;
+        left: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 0.8em;
+        animation: bounce 1s infinite;
     }
 
-    /* Subtitle with clean background */
+    .title::after {
+        content: '🚨';
+        position: absolute;
+        right: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 0.8em;
+        animation: bounce 1s infinite 0.5s;
+    }
+
+    @keyframes rainbow-glow {
+        from {
+            filter: brightness(1) contrast(1);
+            text-shadow:
+                0 0 20px rgba(255, 107, 107, 0.5),
+                0 0 40px rgba(255, 217, 61, 0.3);
+        }
+        to {
+            filter: brightness(1.2) contrast(1.1);
+            text-shadow:
+                0 0 30px rgba(255, 107, 107, 0.8),
+                0 0 60px rgba(255, 217, 61, 0.5),
+                0 0 90px rgba(107, 207, 127, 0.4);
+        }
+    }
+
+    @keyframes bounce {
+        0%, 20%, 50%, 80%, 100% { transform: translateY(-50%) scale(1); }
+        40% { transform: translateY(-50%) scale(1.2); }
+        60% { transform: translateY(-50%) scale(0.9); }
+    }
+
+    /* Subtitle with vibrant styling */
     .subtitle {
-        font-size: 1.4em;
+        font-size: 1.6em;
         text-align: center;
         margin-bottom: 40px;
-        font-style: normal;
-        font-weight: 600;
+        font-weight: 700;
         color: #ffffff;
-        background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(248,249,250,0.95));
-        padding: 20px;
-        border-radius: 15px;
-        border: 3px solid rgba(0,123,255,0.5);
-        backdrop-filter: blur(10px);
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 249, 250, 0.95));
+        padding: 25px 30px;
+        border-radius: 20px;
+        border: 3px solid;
+        border-image: linear-gradient(135deg, #4d96ff, #9b59b6, #ff6b6b) 1;
+        backdrop-filter: blur(15px);
+        box-shadow:
+            0 10px 30px rgba(77, 150, 255, 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, -apple-system, BlinkMacSystemFont, sans-serif;
         line-height: 1.4;
+        letter-spacing: 0.5px;
+        position: relative;
+    }
+
+    .subtitle::before {
+        content: '🔍';
+        position: absolute;
+        left: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 1.5em;
+        opacity: 0.8;
     }
     
     /* Special styling for How it Works section */
@@ -187,23 +241,84 @@ st.markdown("""
         z-index: 2;
     }
 
-    /* Enhanced list styling */
+    /* Enhanced list styling with vibrant colors */
+    .how-it-works-card h3 {
+        color: #ffffff !important;
+        background: linear-gradient(45deg, #4d96ff, #6bcf7f);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-size: 1.8em;
+        font-weight: 800;
+        margin-bottom: 25px;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        border-bottom: 3px solid #4d96ff;
+        padding-bottom: 10px;
+    }
+
     .how-it-works-card ol {
-        padding-left: 20px;
+        padding-left: 25px;
+        counter-reset: step-counter;
     }
 
     .how-it-works-card li {
-        margin-bottom: 15px;
-        padding: 10px 15px;
-        background: rgba(0, 123, 255, 0.05);
-        border-radius: 8px;
-        border-left: 4px solid #007bff;
-        transition: all 0.3s ease;
+        margin-bottom: 18px;
+        padding: 15px 20px;
+        background: linear-gradient(135deg, rgba(77, 150, 255, 0.1), rgba(107, 207, 127, 0.1));
+        border-radius: 12px;
+        border-left: 5px solid #4d96ff;
+        transition: all 0.4s ease;
+        position: relative;
+        counter-increment: step-counter;
+        font-size: 1.1em;
+        font-weight: 600;
+        color: #2c3e50;
+    }
+
+    .how-it-works-card li::before {
+        content: counter(step-counter);
+        position: absolute;
+        left: -15px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: linear-gradient(45deg, #4d96ff, #6bcf7f);
+        color: white;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 0.9em;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     }
 
     .how-it-works-card li:hover {
-        background: rgba(0, 123, 255, 0.1);
-        transform: translateX(5px);
+        background: linear-gradient(135deg, rgba(77, 150, 255, 0.2), rgba(107, 207, 127, 0.2));
+        transform: translateX(8px) scale(1.02);
+        box-shadow: 0 8px 20px rgba(77, 150, 255, 0.3);
+        border-left-color: #6bcf7f;
+    }
+
+    .how-it-works-card strong {
+        color: #4d96ff;
+        font-weight: 800;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    }
+
+    .features-card h4 {
+        color: #ffffff !important;
+        background: linear-gradient(45deg, #28a745, #ffc107, #fd7e14);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-size: 1.6em;
+        font-weight: 800;
+        margin-bottom: 20px;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        border-bottom: 3px solid #28a745;
+        padding-bottom: 8px;
     }
 
     .features-card ul {
@@ -212,17 +327,42 @@ st.markdown("""
     }
 
     .features-card li {
-        margin-bottom: 12px;
-        padding: 8px 12px;
-        background: rgba(40, 167, 69, 0.05);
-        border-radius: 6px;
-        border-left: 4px solid #28a745;
-        transition: all 0.3s ease;
+        margin-bottom: 15px;
+        padding: 12px 18px;
+        background: linear-gradient(135deg, rgba(40, 167, 69, 0.1), rgba(255, 193, 7, 0.1));
+        border-radius: 10px;
+        border-left: 5px solid #28a745;
+        transition: all 0.4s ease;
+        position: relative;
+        font-size: 1.1em;
+        font-weight: 600;
+        color: #2c3e50;
+    }
+
+    .features-card li::before {
+        content: '✓';
+        position: absolute;
+        left: -12px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: linear-gradient(45deg, #28a745, #ffc107);
+        color: white;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 0.8em;
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
     }
 
     .features-card li:hover {
-        background: rgba(40, 167, 69, 0.1);
-        transform: translateX(5px);
+        background: linear-gradient(135deg, rgba(40, 167, 69, 0.2), rgba(255, 193, 7, 0.2));
+        transform: translateX(8px) scale(1.02);
+        box-shadow: 0 8px 20px rgba(40, 167, 69, 0.3);
+        border-left-color: #ffc107;
     }
 
     .card::before {
@@ -290,64 +430,108 @@ st.markdown("""
         opacity: 0.3;
     }
     
-    /* Enhanced button styling with background colors */
+    /* Enhanced button styling with vibrant gradients */
     .stButton>button {
-        background: #007bff;
+        background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
         color: white;
         border: none;
         border-radius: 15px;
-        padding: 15px 30px;
-        font-weight: bold;
+        padding: 18px 35px;
+        font-weight: 800;
         font-size: 18px;
-        transition: all 0.3s ease;
-        box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4);
+        transition: all 0.4s ease;
+        box-shadow:
+            0 8px 25px rgba(102, 126, 234, 0.4),
+            inset 0 1px 0 rgba(255, 255, 255, 0.2);
         position: relative;
         overflow: hidden;
         width: 100%;
-        margin: 10px 0;
+        margin: 12px 0;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        border: 2px solid transparent;
+        background-clip: padding-box;
+    }
+
+    .stButton>button::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+        transition: left 0.6s;
+        z-index: 1;
+    }
+
+    .stButton>button:hover::before {
+        left: 100%;
     }
 
     .stButton>button:hover {
-        background: #0056b3;
-        transform: translateY(-3px) scale(1.02);
-        box-shadow: 0 10px 30px rgba(0, 123, 255, 0.6);
+        background: linear-gradient(45deg, #764ba2 0%, #667eea 100%);
+        transform: translateY(-4px) scale(1.03);
+        box-shadow:
+            0 12px 35px rgba(102, 126, 234, 0.6),
+            inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        border-color: rgba(255, 255, 255, 0.3);
     }
 
-    /* Danger button variant with red background */
+    .stButton>button:active {
+        transform: translateY(-2px) scale(1.01);
+        box-shadow:
+            0 6px 15px rgba(102, 126, 234, 0.4),
+            inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Danger button variant with vibrant red gradient */
     .stButton>button[data-testid*="detect"] {
-        background: #dc3545;
-        box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
+        background: linear-gradient(45deg, #ff6b6b 0%, #ee5a24 100%);
+        box-shadow:
+            0 8px 25px rgba(255, 107, 107, 0.4),
+            inset 0 1px 0 rgba(255, 255, 255, 0.2);
     }
 
     .stButton>button[data-testid*="detect"]:hover {
-        background: #c82333;
-        box-shadow: 0 10px 30px rgba(220, 53, 69, 0.6);
+        background: linear-gradient(45deg, #ee5a24 0%, #ff6b6b 100%);
+        box-shadow:
+            0 12px 35px rgba(255, 107, 107, 0.6),
+            inset 0 1px 0 rgba(255, 255, 255, 0.3);
     }
 
-    /* Success button variant with green background */
+    /* Success button variant with vibrant green gradient */
     .stButton>button[data-testid*="ocr"] {
-        background: #28a745;
-        box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+        background: linear-gradient(45deg, #6bcf7f 0%, #28a745 100%);
+        box-shadow:
+            0 8px 25px rgba(107, 207, 127, 0.4),
+            inset 0 1px 0 rgba(255, 255, 255, 0.2);
     }
 
     .stButton>button[data-testid*="ocr"]:hover {
-        background: #218838;
-        box-shadow: 0 10px 30px rgba(40, 167, 69, 0.6);
+        background: linear-gradient(45deg, #28a745 0%, #6bcf7f 100%);
+        box-shadow:
+            0 12px 35px rgba(107, 207, 127, 0.6),
+            inset 0 1px 0 rgba(255, 255, 255, 0.3);
     }
     
-    /* File uploader styling with background image */
+    /* File uploader styling with vibrant design */
     .uploadedFile {
-        border: 4px dashed #007bff;
+        border: 4px dashed;
+        border-image: linear-gradient(45deg, #667eea, #764ba2, #ff6b6b, #6bcf7f) 1;
         border-radius: 20px;
-        padding: 40px;
+        padding: 50px 40px;
         text-align: center;
-        background: linear-gradient(135deg, rgba(248, 249, 255, 0.9), rgba(232, 242, 255, 0.9));
-        transition: all 0.4s ease;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 249, 255, 0.9));
+        transition: all 0.5s ease;
         position: relative;
         overflow: hidden;
-        backdrop-filter: blur(10px);
+        backdrop-filter: blur(15px);
         width: 100%;
-        margin: 20px 0;
+        margin: 25px 0;
+        box-shadow:
+            0 10px 30px rgba(102, 126, 234, 0.2),
+            inset 0 1px 0 rgba(255, 255, 255, 0.3);
     }
 
     .uploadedFile::before {
@@ -357,27 +541,33 @@ st.markdown("""
         left: 0;
         right: 0;
         bottom: 0;
-        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="none" stroke="rgba(0,123,255,0.1)" stroke-width="2"/><path d="M30 50 L45 65 L70 40" stroke="rgba(0,123,255,0.2)" stroke-width="3" fill="none"/></svg>');
-        opacity: 0.1;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="upload-pattern" width="25" height="25" patternUnits="userSpaceOnUse"><circle cx="12.5" cy="12.5" r="2" fill="none" stroke="rgba(102,126,234,0.1)" stroke-width="1"/><path d="M8 12.5 L12.5 17.5 L17 12.5 M12.5 8 L12.5 17.5" stroke="rgba(102,126,234,0.15)" stroke-width="1.5" fill="none"/></pattern></defs><rect width="100" height="100" fill="url(%23upload-pattern)"/></svg>');
+        opacity: 0.6;
+        z-index: 1;
     }
 
     .uploadedFile:hover {
-        border-color: #0056b3;
-        background: linear-gradient(135deg, rgba(232, 242, 255, 0.95), rgba(212, 232, 255, 0.95));
-        transform: scale(1.02);
-        box-shadow: 0 10px 30px rgba(0, 123, 255, 0.3);
+        border-color: transparent;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(248, 249, 255, 0.95));
+        transform: translateY(-5px) scale(1.02);
+        box-shadow:
+            0 15px 40px rgba(102, 126, 234, 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.4);
     }
 
     .uploadedFile::after {
-        content: '📤 Drop your image here or click to browse';
+        content: '📤 Drop your image here or click to browse 📸';
         position: absolute;
-        bottom: 20px;
+        bottom: 25px;
         left: 50%;
         transform: translateX(-50%);
-        font-size: 1.2em;
-        color: #007bff;
-        font-weight: bold;
-        opacity: 0.8;
+        font-size: 1.3em;
+        color: #667eea;
+        font-weight: 700;
+        opacity: 0.9;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        z-index: 2;
+        letter-spacing: 0.5px;
     }
     
     /* Enhanced message styling with icons */
@@ -549,20 +739,30 @@ st.markdown("""
         background: linear-gradient(180deg, #f8f9fa 0%, #e9ecef 100%);
     }
     
-    /* Text input styling */
+    /* Enhanced text input styling */
     .stTextInput > div > div > input {
-        border-radius: 10px;
-        border: 2px solid #ced4da;
-        padding: 10px 15px;
+        border-radius: 12px;
+        border: 2px solid rgba(102, 126, 234, 0.3);
+        padding: 12px 18px;
         transition: all 0.3s ease;
+        background: rgba(255, 255, 255, 0.9);
+        font-size: 16px;
+        font-weight: 600;
+        color: #2c3e50;
+        box-shadow: 0 2px 8px rgba(102, 126, 234, 0.1);
     }
-    
+
     .stTextInput > div > div > input:focus {
-        border-color: #007bff;
-        box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+        border-color: #667eea;
+        box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        background: rgba(255, 255, 255, 1);
+        transform: scale(1.02);
     }
-    
-    /* Full screen layout adjustments */
+
+    .stTextInput > div > div > input::placeholder {
+        color: #7f8c8d;
+        font-weight: 500;
+    }    /* Full screen layout adjustments */
     .css-18e3th9 {
         width: 100% !important;
         max-width: none !important;
