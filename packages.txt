@@ -1,3 +1,4 @@
+libglib2.0-0=2.74.6-2+deb12u8
 libgl1
 libsm6
 libxrender1
