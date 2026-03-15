@@ -11,195 +11,235 @@ import numpy as np
 import csv
 from datetime import datetime
 
-# Custom CSS for attractive styling
+# Custom CSS for full-screen attractive styling with backgrounds
 st.markdown("""
 <style>
-    /* Main background with gradient */
+    /* Full screen layout */
     .main {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #3a7bd5 100%);
         background-attachment: fixed;
+        min-height: 100vh;
+        width: 100vw;
+        margin: 0;
+        padding: 0;
     }
-    
-    /* App container background */
+
+    /* Remove default Streamlit padding and margins */
     .block-container {
         background: rgba(255, 255, 255, 0.95);
-        border-radius: 15px;
-        margin: 20px;
-        padding: 30px;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        border-radius: 0;
+        margin: 0;
+        padding: 20px;
+        min-height: 100vh;
+        box-shadow: none;
         backdrop-filter: blur(10px);
+        width: 100%;
+        max-width: none;
     }
-    
-    /* Title styling with glow effect */
+
+    /* Title with background image effect */
     .title {
-        color: #dc3545;
-        font-size: 3em;
+        font-size: 3.5em;
         font-weight: bold;
         text-align: center;
         margin-bottom: 20px;
-        text-shadow: 3px 3px 6px rgba(220, 53, 69, 0.3);
-        background: linear-gradient(45deg, #dc3545, #ff6b6b);
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 20"><text fill="white" font-size="12" font-weight="bold" y="15">🚨 ACCIDENT DETECTION 🚨</text></svg>') no-repeat center;
+        background-size: contain;
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
-        animation: glow 2s ease-in-out infinite alternate;
+        text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
+        padding: 20px;
+        border-radius: 15px;
+        background-color: rgba(220, 53, 69, 0.9);
+        animation: pulse 2s ease-in-out infinite alternate;
     }
-    
-    @keyframes glow {
-        from { text-shadow: 3px 3px 6px rgba(220, 53, 69, 0.3); }
-        to { text-shadow: 3px 3px 12px rgba(220, 53, 69, 0.6); }
+
+    @keyframes pulse {
+        from { transform: scale(1); }
+        to { transform: scale(1.02); }
     }
-    
-    /* Subtitle styling */
+
+    /* Subtitle with background */
     .subtitle {
-        color: #495057;
-        font-size: 1.3em;
+        font-size: 1.4em;
         text-align: center;
         margin-bottom: 40px;
         font-style: italic;
-        background: rgba(255, 255, 255, 0.8);
-        padding: 15px;
-        border-radius: 10px;
-        border: 2px solid #e9ecef;
+        background: linear-gradient(45deg, rgba(255,255,255,0.9), rgba(248,249,250,0.9));
+        padding: 20px;
+        border-radius: 15px;
+        border: 3px solid rgba(0,123,255,0.3);
+        backdrop-filter: blur(5px);
     }
     
-    /* Enhanced card styling with gradients */
+    /* Enhanced card styling with background images */
     .card {
-        background: linear-gradient(145deg, #ffffff, #f8f9fa);
-        border-radius: 15px;
-        padding: 25px;
-        margin: 15px 0;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-        border-left: 6px solid #007bff;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        background: linear-gradient(145deg, rgba(255,255,255,0.95), rgba(248,249,250,0.95));
+        border-radius: 20px;
+        padding: 30px;
+        margin: 20px 0;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        border: none;
+        transition: transform 0.4s ease, box-shadow 0.4s ease;
         position: relative;
         overflow: hidden;
+        backdrop-filter: blur(10px);
     }
-    
-    .card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
-    }
-    
+
     .card::before {
         content: '';
         position: absolute;
         top: 0;
         left: 0;
         right: 0;
-        height: 4px;
-        background: linear-gradient(90deg, #007bff, #6610f2, #e83e8c);
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(0,123,255,0.1)" stroke-width="1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+        opacity: 0.1;
+        z-index: 1;
     }
-    
+
+    .card:hover {
+        transform: translateY(-8px) scale(1.02);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .card > * {
+        position: relative;
+        z-index: 2;
+    }
+
+    /* Card variants with different background colors */
     .card-danger {
-        border-left-color: #dc3545;
+        background: linear-gradient(135deg, rgba(220, 53, 69, 0.1), rgba(255, 107, 107, 0.1));
+        border-left: 8px solid #dc3545;
     }
-    
-    .card-danger::before {
-        background: linear-gradient(90deg, #dc3545, #fd7e14, #ffc107);
+
+    .card-danger::after {
+        content: '🚨';
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        font-size: 2em;
+        opacity: 0.3;
     }
-    
+
     .card-success {
-        border-left-color: #28a745;
+        background: linear-gradient(135deg, rgba(40, 167, 69, 0.1), rgba(32, 201, 151, 0.1));
+        border-left: 8px solid #28a745;
     }
-    
-    .card-success::before {
-        background: linear-gradient(90deg, #28a745, #20c997, #17a2b8);
+
+    .card-success::after {
+        content: '✅';
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        font-size: 2em;
+        opacity: 0.3;
     }
-    
+
     .card-warning {
-        border-left-color: #ffc107;
+        background: linear-gradient(135deg, rgba(255, 193, 7, 0.1), rgba(253, 126, 20, 0.1));
+        border-left: 8px solid #ffc107;
+    }
+
+    .card-warning::after {
+        content: '⚠️';
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        font-size: 2em;
+        opacity: 0.3;
     }
     
-    .card-warning::before {
-        background: linear-gradient(90deg, #ffc107, #fd7e14, #dc3545);
-    }
-    
-    /* Enhanced button styling with multiple variants */
+    /* Enhanced button styling with background colors */
     .stButton>button {
-        background: linear-gradient(45deg, #007bff, #0056b3);
+        background: #007bff;
         color: white;
         border: none;
-        border-radius: 30px;
-        padding: 12px 25px;
+        border-radius: 15px;
+        padding: 15px 30px;
         font-weight: bold;
-        font-size: 16px;
-        transition: all 0.4s ease;
-        box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+        font-size: 18px;
+        transition: all 0.3s ease;
+        box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4);
         position: relative;
         overflow: hidden;
+        width: 100%;
+        margin: 10px 0;
+    }
+
+    .stButton>button:hover {
+        background: #0056b3;
+        transform: translateY(-3px) scale(1.02);
+        box-shadow: 0 10px 30px rgba(0, 123, 255, 0.6);
+    }
+
+    /* Danger button variant with red background */
+    .stButton>button[data-testid*="detect"] {
+        background: #dc3545;
+        box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
+    }
+
+    .stButton>button[data-testid*="detect"]:hover {
+        background: #c82333;
+        box-shadow: 0 10px 30px rgba(220, 53, 69, 0.6);
+    }
+
+    /* Success button variant with green background */
+    .stButton>button[data-testid*="ocr"] {
+        background: #28a745;
+        box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+    }
+
+    .stButton>button[data-testid*="ocr"]:hover {
+        background: #218838;
+        box-shadow: 0 10px 30px rgba(40, 167, 69, 0.6);
     }
     
-    .stButton>button::before {
+    /* File uploader styling with background image */
+    .uploadedFile {
+        border: 4px dashed #007bff;
+        border-radius: 20px;
+        padding: 40px;
+        text-align: center;
+        background: linear-gradient(135deg, rgba(248, 249, 255, 0.9), rgba(232, 242, 255, 0.9));
+        transition: all 0.4s ease;
+        position: relative;
+        overflow: hidden;
+        backdrop-filter: blur(10px);
+        width: 100%;
+        margin: 20px 0;
+    }
+
+    .uploadedFile::before {
         content: '';
         position: absolute;
         top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-        transition: left 0.5s;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="none" stroke="rgba(0,123,255,0.1)" stroke-width="2"/><path d="M30 50 L45 65 L70 40" stroke="rgba(0,123,255,0.2)" stroke-width="3" fill="none"/></svg>');
+        opacity: 0.1;
     }
-    
-    .stButton>button:hover::before {
-        left: 100%;
-    }
-    
-    .stButton>button:hover {
-        transform: translateY(-3px) scale(1.05);
-        box-shadow: 0 8px 25px rgba(0, 123, 255, 0.4);
-    }
-    
-    /* Danger button variant */
-    .stButton>button[data-testid*="detect"] {
-        background: linear-gradient(45deg, #dc3545, #c82333);
-        box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
-    }
-    
-    .stButton>button[data-testid*="detect"]:hover {
-        box-shadow: 0 8px 25px rgba(220, 53, 69, 0.4);
-    }
-    
-    /* Success button variant */
-    .stButton>button[data-testid*="ocr"] {
-        background: linear-gradient(45deg, #28a745, #218838);
-        box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
-    }
-    
-    .stButton>button[data-testid*="ocr"]:hover {
-        box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
-    }
-    
-    /* File uploader styling with animation */
-    .uploadedFile {
-        border: 3px dashed #007bff;
-        border-radius: 15px;
-        padding: 30px;
-        text-align: center;
-        background: linear-gradient(135deg, #f8f9ff 0%, #e8f2ff 100%);
-        transition: all 0.3s ease;
-        position: relative;
-        overflow: hidden;
-    }
-    
+
     .uploadedFile:hover {
         border-color: #0056b3;
-        background: linear-gradient(135deg, #e8f2ff 0%, #d4e8ff 100%);
+        background: linear-gradient(135deg, rgba(232, 242, 255, 0.95), rgba(212, 232, 255, 0.95));
         transform: scale(1.02);
+        box-shadow: 0 10px 30px rgba(0, 123, 255, 0.3);
     }
-    
-    .uploadedFile::before {
-        content: '📤';
-        font-size: 3em;
-        display: block;
-        margin-bottom: 10px;
-        animation: bounce 2s infinite;
-    }
-    
-    @keyframes bounce {
-        0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-        40% { transform: translateY(-10px); }
-        60% { transform: translateY(-5px); }
+
+    .uploadedFile::after {
+        content: '📤 Drop your image here or click to browse';
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 1.2em;
+        color: #007bff;
+        font-weight: bold;
+        opacity: 0.8;
     }
     
     /* Enhanced message styling with icons */
@@ -314,23 +354,51 @@ st.markdown("""
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
     
-    /* Footer with enhanced styling */
+    /* Footer with enhanced full-screen styling */
     .footer {
         text-align: center;
-        background: linear-gradient(135deg, #495057 0%, #343a40 100%);
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #3a7bd5 100%);
         color: white;
         margin-top: 50px;
-        padding: 30px;
-        border-radius: 15px 15px 0 0;
-        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2);
+        padding: 40px 20px;
+        border-radius: 0;
+        box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.3);
         position: relative;
+        width: 100vw;
+        left: 50%;
+        transform: translateX(-50%);
+        backdrop-filter: blur(10px);
     }
-    
+
     .footer::before {
-        content: '🚨';
-        font-size: 2em;
+        content: '🚨 🚨 🚨';
+        font-size: 2.5em;
         display: block;
-        margin-bottom: 10px;
+        margin-bottom: 15px;
+        animation: blink 2s infinite;
+    }
+
+    @keyframes blink {
+        0%, 50% { opacity: 1; }
+        51%, 100% { opacity: 0.7; }
+    }
+
+    /* Make all columns full width on mobile */
+    @media (max-width: 768px) {
+        .css-1lcbmhc {
+            width: 100% !important;
+            margin: 10px 0 !important;
+        }
+
+        .card {
+            margin: 10px 0 !important;
+            padding: 20px !important;
+        }
+
+        .stButton>button {
+            font-size: 16px !important;
+            padding: 12px 20px !important;
+        }
     }
     
     /* Progress bar styling */
@@ -356,34 +424,47 @@ st.markdown("""
         box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
     }
     
-    /* Select box styling */
-    .stSelectbox > div > div {
-        border-radius: 10px;
-        border: 2px solid #ced4da;
-        transition: all 0.3s ease;
+    /* Full screen layout adjustments */
+    .css-18e3th9 {
+        width: 100% !important;
+        max-width: none !important;
+        padding: 0 !important;
     }
-    
-    .stSelectbox > div > div:hover {
-        border-color: #007bff;
+
+    .css-1d391kg {
+        width: 100% !important;
+        max-width: none !important;
     }
-    
-    /* Image styling */
-    .stImage {
-        border-radius: 10px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        transition: transform 0.3s ease;
+
+    /* Remove Streamlit default margins */
+    .css-1adrfps {
+        margin: 0 !important;
+        padding: 0 !important;
     }
-    
-    .stImage:hover {
-        transform: scale(1.02);
+
+    /* Background image overlays for different sections */
+    .detection-section {
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="traffic" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="2" fill="rgba(255,255,255,0.1)"/><path d="M5 5 L15 15 M15 5 L5 15" stroke="rgba(255,255,255,0.1)" stroke-width="1"/></pattern></defs><rect width="100" height="100" fill="url(%23traffic)"/></svg>');
+        background-size: 100px 100px;
+        border-radius: 20px;
+        padding: 20px;
+        margin: 20px 0;
     }
-    
-    /* JSON display styling */
-    .stJson {
-        background: #f8f9fa;
-        border-radius: 8px;
-        padding: 15px;
-        border: 1px solid #dee2e6;
+
+    .ocr-section {
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="scan" width="15" height="15" patternUnits="userSpaceOnUse"><rect x="2" y="2" width="11" height="11" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/><line x1="5" y1="5" x2="10" y2="10" stroke="rgba(255,255,255,0.1)" stroke-width="1"/><line x1="10" y1="5" x2="5" y2="10" stroke="rgba(255,255,255,0.1)" stroke-width="1"/></pattern></defs><rect width="100" height="100" fill="url(%23scan)"/></svg>');
+        background-size: 75px 75px;
+        border-radius: 20px;
+        padding: 20px;
+        margin: 20px 0;
+    }
+
+    .sms-section {
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="message" width="25" height="25" patternUnits="userSpaceOnUse"><path d="M5 5 L20 5 L20 15 L12.5 20 L5 15 Z" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/><circle cx="8" cy="8" r="1" fill="rgba(255,255,255,0.2)"/><circle cx="12" cy="8" r="1" fill="rgba(255,255,255,0.2)"/><circle cx="16" cy="8" r="1" fill="rgba(255,255,255,0.2)"/></pattern></defs><rect width="100" height="100" fill="url(%23message)"/></svg>');
+        background-size: 125px 125px;
+        border-radius: 20px;
+        padding: 20px;
+        margin: 20px 0;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -613,7 +694,7 @@ Emergency services have been notified."""
 
 
 st.markdown("""
-<div class="card">
+<div class="card detection-section">
     <h3 style="color: #007bff; margin-top: 0;">📤 Upload Image for Analysis</h3>
     <p style="color: #6c757d;">Supported formats: JPG, JPEG, PNG, AVIF 📸</p>
 </div>
@@ -694,7 +775,7 @@ if uploaded_file is not None:
         st.session_state.show_ocr_form = False
 
     st.markdown("""
-    <div style="text-align: center; margin: 30px 0 20px 0;">
+    <div style="text-align: center; margin: 30px 0 20px 0;" class="ocr-section">
         <h4 style="color: #17a2b8;">🔤 License Plate Recognition</h4>
     </div>
     """, unsafe_allow_html=True)
@@ -799,7 +880,7 @@ if uploaded_file is not None:
 
                     # Use text inputs and a button (more reliable than forms)
                     st.markdown("""
-                    <div class="card card-danger">
+                    <div class="card card-danger sms-section">
                         <h4 style="color: #dc3545; margin-top: 0;">🚨 Configure Emergency SMS</h4>
                         <p style="margin-bottom: 15px;">Set up Twilio credentials to send automatic emergency alerts.</p>
                     </div>
