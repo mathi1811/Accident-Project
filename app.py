@@ -63,33 +63,26 @@ st.markdown("""
         pointer-events: none;
     }
 
-    /* Title with vibrant, attractive styling */
+    /* Title with clean, single color styling */
     .title {
-        font-size: 3.5em;
+        font-size: 3.2em;
         font-weight: 900;
         text-align: center;
         margin-bottom: 25px;
-        background: linear-gradient(45deg, #ff6b6b, #ffd93d, #6bcf7f, #4d96ff, #9b59b6);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
+        color: #ffffff;
         text-shadow:
-            0 0 20px rgba(255, 107, 107, 0.5),
-            0 0 40px rgba(255, 217, 61, 0.3),
-            0 0 60px rgba(107, 207, 127, 0.3),
-            0 0 80px rgba(77, 150, 255, 0.3);
+            2px 2px 4px rgba(0, 0, 0, 0.8),
+            0 0 20px rgba(255, 107, 107, 0.6);
         padding: 25px 30px;
         border-radius: 20px;
-        background-color: rgba(0, 0, 0, 0.8);
-        border: 3px solid;
-        border-image: linear-gradient(45deg, #ff6b6b, #ffd93d, #6bcf7f, #4d96ff) 1;
+        background: linear-gradient(135deg, rgba(220, 53, 69, 0.9), rgba(255, 107, 107, 0.8));
+        border: 3px solid #ffffff;
         display: inline-block;
         width: 100%;
         box-sizing: border-box;
         font-family: 'Arial Black', 'Impact', 'Helvetica Bold', Arial, sans-serif;
-        letter-spacing: 3px;
+        letter-spacing: 2px;
         line-height: 1.1;
-        animation: rainbow-glow 3s ease-in-out infinite alternate;
         position: relative;
     }
 
@@ -113,40 +106,23 @@ st.markdown("""
         animation: bounce 1s infinite 0.5s;
     }
 
-    @keyframes rainbow-glow {
-        from {
-            filter: brightness(1) contrast(1);
-            text-shadow:
-                0 0 20px rgba(255, 107, 107, 0.5),
-                0 0 40px rgba(255, 217, 61, 0.3);
-        }
-        to {
-            filter: brightness(1.2) contrast(1.1);
-            text-shadow:
-                0 0 30px rgba(255, 107, 107, 0.8),
-                0 0 60px rgba(255, 217, 61, 0.5),
-                0 0 90px rgba(107, 207, 127, 0.4);
-        }
-    }
-
     @keyframes bounce {
         0%, 20%, 50%, 80%, 100% { transform: translateY(-50%) scale(1); }
         40% { transform: translateY(-50%) scale(1.2); }
         60% { transform: translateY(-50%) scale(0.9); }
     }
 
-    /* Subtitle with vibrant styling */
+    /* Subtitle with clean styling */
     .subtitle {
         font-size: 1.6em;
         text-align: center;
         margin-bottom: 40px;
         font-weight: 700;
-        color: #ffffff;
+        color: #2c3e50;
         background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 249, 250, 0.95));
         padding: 25px 30px;
         border-radius: 20px;
-        border: 3px solid;
-        border-image: linear-gradient(135deg, #4d96ff, #9b59b6, #ff6b6b) 1;
+        border: 3px solid rgba(102, 126, 234, 0.5);
         backdrop-filter: blur(15px);
         box-shadow:
             0 10px 30px rgba(77, 150, 255, 0.3),
@@ -244,16 +220,14 @@ st.markdown("""
     /* Enhanced list styling with vibrant colors */
     .how-it-works-card h3 {
         color: #ffffff !important;
-        background: linear-gradient(45deg, #4d96ff, #6bcf7f);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
         font-size: 1.8em;
         font-weight: 800;
         margin-bottom: 25px;
         text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-        border-bottom: 3px solid #4d96ff;
-        padding-bottom: 10px;
+        background: linear-gradient(135deg, rgba(77, 150, 255, 0.9), rgba(107, 207, 127, 0.8));
+        padding: 15px 20px;
+        border-radius: 15px;
+        border: 2px solid #ffffff;
     }
 
     .how-it-works-card ol {
@@ -309,16 +283,14 @@ st.markdown("""
 
     .features-card h4 {
         color: #ffffff !important;
-        background: linear-gradient(45deg, #28a745, #ffc107, #fd7e14);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
         font-size: 1.6em;
         font-weight: 800;
         margin-bottom: 20px;
         text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-        border-bottom: 3px solid #28a745;
-        padding-bottom: 8px;
+        background: linear-gradient(135deg, rgba(40, 167, 69, 0.9), rgba(255, 193, 7, 0.8));
+        padding: 12px 18px;
+        border-radius: 12px;
+        border: 2px solid #ffffff;
     }
 
     .features-card ul {
