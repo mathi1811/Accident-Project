@@ -14,6 +14,14 @@ from datetime import datetime
 # Custom CSS for full-screen attractive styling with backgrounds
 st.markdown("""
 <style>
+    /* Global font settings for better readability */
+    * {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, -apple-system, BlinkMacSystemFont, sans-serif !important;
+    }
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, -apple-system, BlinkMacSystemFont, sans-serif !important;
+    }
     /* Full screen layout */
     .main {
         background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #3a7bd5 100%);
@@ -37,22 +45,31 @@ st.markdown("""
         max-width: none;
     }
 
-    /* Title with background image effect */
+    /* Title with clean, readable styling */
     .title {
-        font-size: 3.5em;
-        font-weight: bold;
+        font-size: 3.2em;
+        font-weight: 900;
         text-align: center;
         margin-bottom: 20px;
-        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 20"><text fill="white" font-size="12" font-weight="bold" y="15">🚨 ACCIDENT DETECTION 🚨</text></svg>') no-repeat center;
-        background-size: contain;
+        color: #ffffff;
+        text-shadow:
+            3px 3px 0px #dc3545,
+            6px 6px 0px rgba(220, 53, 69, 0.5),
+            9px 9px 20px rgba(0, 0, 0, 0.8);
+        background: linear-gradient(45deg, #ffffff 0%, #f8f9fa 50%, #ffffff 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
-        text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
         padding: 20px;
         border-radius: 15px;
         background-color: rgba(220, 53, 69, 0.9);
-        animation: pulse 2s ease-in-out infinite alternate;
+        border: 4px solid #ffffff;
+        display: inline-block;
+        width: 100%;
+        box-sizing: border-box;
+        font-family: 'Arial Black', 'Arial Bold', Arial, sans-serif;
+        letter-spacing: 2px;
+        line-height: 1.2;
     }
 
     @keyframes pulse {
@@ -60,17 +77,22 @@ st.markdown("""
         to { transform: scale(1.02); }
     }
 
-    /* Subtitle with background */
+    /* Subtitle with clean background */
     .subtitle {
         font-size: 1.4em;
         text-align: center;
         margin-bottom: 40px;
-        font-style: italic;
-        background: linear-gradient(45deg, rgba(255,255,255,0.9), rgba(248,249,250,0.9));
+        font-style: normal;
+        font-weight: 600;
+        color: #ffffff;
+        background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(248,249,250,0.95));
         padding: 20px;
         border-radius: 15px;
-        border: 3px solid rgba(0,123,255,0.3);
-        backdrop-filter: blur(5px);
+        border: 3px solid rgba(0,123,255,0.5);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.4;
     }
     
     /* Enhanced card styling with background images */
