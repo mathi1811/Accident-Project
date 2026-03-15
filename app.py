@@ -14,128 +14,376 @@ from datetime import datetime
 # Custom CSS for attractive styling
 st.markdown("""
 <style>
-    /* Main background and text colors */
+    /* Main background with gradient */
     .main {
-        background-color: #f8f9fa;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background-attachment: fixed;
     }
     
-    /* Title styling */
+    /* App container background */
+    .block-container {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 15px;
+        margin: 20px;
+        padding: 30px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(10px);
+    }
+    
+    /* Title styling with glow effect */
     .title {
         color: #dc3545;
-        font-size: 2.5em;
+        font-size: 3em;
         font-weight: bold;
         text-align: center;
         margin-bottom: 20px;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        text-shadow: 3px 3px 6px rgba(220, 53, 69, 0.3);
+        background: linear-gradient(45deg, #dc3545, #ff6b6b);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        animation: glow 2s ease-in-out infinite alternate;
+    }
+    
+    @keyframes glow {
+        from { text-shadow: 3px 3px 6px rgba(220, 53, 69, 0.3); }
+        to { text-shadow: 3px 3px 12px rgba(220, 53, 69, 0.6); }
     }
     
     /* Subtitle styling */
     .subtitle {
         color: #495057;
-        font-size: 1.2em;
+        font-size: 1.3em;
         text-align: center;
-        margin-bottom: 30px;
+        margin-bottom: 40px;
         font-style: italic;
+        background: rgba(255, 255, 255, 0.8);
+        padding: 15px;
+        border-radius: 10px;
+        border: 2px solid #e9ecef;
     }
     
-    /* Card styling */
+    /* Enhanced card styling with gradients */
     .card {
-        background: white;
-        border-radius: 10px;
-        padding: 20px;
-        margin: 10px 0;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        border-left: 5px solid #007bff;
+        background: linear-gradient(145deg, #ffffff, #f8f9fa);
+        border-radius: 15px;
+        padding: 25px;
+        margin: 15px 0;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        border-left: 6px solid #007bff;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
+    }
+    
+    .card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #007bff, #6610f2, #e83e8c);
     }
     
     .card-danger {
         border-left-color: #dc3545;
     }
     
+    .card-danger::before {
+        background: linear-gradient(90deg, #dc3545, #fd7e14, #ffc107);
+    }
+    
     .card-success {
         border-left-color: #28a745;
     }
     
-    /* Button styling */
+    .card-success::before {
+        background: linear-gradient(90deg, #28a745, #20c997, #17a2b8);
+    }
+    
+    .card-warning {
+        border-left-color: #ffc107;
+    }
+    
+    .card-warning::before {
+        background: linear-gradient(90deg, #ffc107, #fd7e14, #dc3545);
+    }
+    
+    /* Enhanced button styling with multiple variants */
     .stButton>button {
         background: linear-gradient(45deg, #007bff, #0056b3);
         color: white;
         border: none;
-        border-radius: 25px;
-        padding: 10px 20px;
+        border-radius: 30px;
+        padding: 12px 25px;
         font-weight: bold;
-        transition: all 0.3s ease;
+        font-size: 16px;
+        transition: all 0.4s ease;
+        box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .stButton>button::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        transition: left 0.5s;
+    }
+    
+    .stButton>button:hover::before {
+        left: 100%;
     }
     
     .stButton>button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        transform: translateY(-3px) scale(1.05);
+        box-shadow: 0 8px 25px rgba(0, 123, 255, 0.4);
     }
     
-    /* File uploader styling */
+    /* Danger button variant */
+    .stButton>button[data-testid*="detect"] {
+        background: linear-gradient(45deg, #dc3545, #c82333);
+        box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+    }
+    
+    .stButton>button[data-testid*="detect"]:hover {
+        box-shadow: 0 8px 25px rgba(220, 53, 69, 0.4);
+    }
+    
+    /* Success button variant */
+    .stButton>button[data-testid*="ocr"] {
+        background: linear-gradient(45deg, #28a745, #218838);
+        box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+    }
+    
+    .stButton>button[data-testid*="ocr"]:hover {
+        box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+    }
+    
+    /* File uploader styling with animation */
     .uploadedFile {
-        border: 2px dashed #007bff;
-        border-radius: 10px;
-        padding: 20px;
+        border: 3px dashed #007bff;
+        border-radius: 15px;
+        padding: 30px;
         text-align: center;
-        background: #f8f9ff;
+        background: linear-gradient(135deg, #f8f9ff 0%, #e8f2ff 100%);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
     }
     
-    /* Success messages */
+    .uploadedFile:hover {
+        border-color: #0056b3;
+        background: linear-gradient(135deg, #e8f2ff 0%, #d4e8ff 100%);
+        transform: scale(1.02);
+    }
+    
+    .uploadedFile::before {
+        content: '📤';
+        font-size: 3em;
+        display: block;
+        margin-bottom: 10px;
+        animation: bounce 2s infinite;
+    }
+    
+    @keyframes bounce {
+        0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+        40% { transform: translateY(-10px); }
+        60% { transform: translateY(-5px); }
+    }
+    
+    /* Enhanced message styling with icons */
     .success-msg {
-        background: #d4edda;
+        background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
         color: #155724;
-        border: 1px solid #c3e6cb;
-        border-radius: 5px;
-        padding: 10px;
-        margin: 10px 0;
-    }
-    
-    /* Warning messages */
-    .warning-msg {
-        background: #fff3cd;
-        color: #856404;
-        border: 1px solid #ffeaa7;
-        border-radius: 5px;
-        padding: 10px;
-        margin: 10px 0;
-    }
-    
-    /* Error messages */
-    .error-msg {
-        background: #f8d7da;
-        color: #721c24;
-        border: 1px solid #f5c6cb;
-        border-radius: 5px;
-        padding: 10px;
-        margin: 10px 0;
-    }
-    
-    /* Detection results styling */
-    .detection-result {
-        background: #e7f3ff;
-        border: 1px solid #b3d9ff;
-        border-radius: 8px;
+        border: 2px solid #28a745;
+        border-radius: 10px;
         padding: 15px;
-        margin: 10px 0;
+        margin: 15px 0;
+        position: relative;
+        box-shadow: 0 4px 12px rgba(40, 167, 69, 0.2);
+    }
+    
+    .success-msg::before {
+        content: '✅';
+        font-size: 1.5em;
+        margin-right: 10px;
+    }
+    
+    .warning-msg {
+        background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+        color: #856404;
+        border: 2px solid #ffc107;
+        border-radius: 10px;
+        padding: 15px;
+        margin: 15px 0;
+        position: relative;
+        box-shadow: 0 4px 12px rgba(255, 193, 7, 0.2);
+    }
+    
+    .warning-msg::before {
+        content: '⚠️';
+        font-size: 1.5em;
+        margin-right: 10px;
+    }
+    
+    .error-msg {
+        background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+        color: #721c24;
+        border: 2px solid #dc3545;
+        border-radius: 10px;
+        padding: 15px;
+        margin: 15px 0;
+        position: relative;
+        box-shadow: 0 4px 12px rgba(220, 53, 69, 0.2);
+    }
+    
+    .error-msg::before {
+        content: '❌';
+        font-size: 1.5em;
+        margin-right: 10px;
+    }
+    
+    /* Detection results styling with enhanced colors */
+    .detection-result {
+        background: linear-gradient(135deg, #e7f3ff 0%, #d4e8ff 100%);
+        border: 3px solid #007bff;
+        border-radius: 15px;
+        padding: 20px;
+        margin: 15px 0;
+        position: relative;
+        box-shadow: 0 6px 20px rgba(0, 123, 255, 0.2);
+    }
+    
+    .detection-result::before {
+        content: '🎯';
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        font-size: 2em;
+        opacity: 0.7;
     }
     
     /* OCR results styling */
     .ocr-result {
-        background: #f0f9ff;
-        border: 1px solid #b3e5fc;
-        border-radius: 8px;
-        padding: 15px;
-        margin: 10px 0;
+        background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+        border: 3px solid #17a2b8;
+        border-radius: 15px;
+        padding: 20px;
+        margin: 15px 0;
+        position: relative;
+        box-shadow: 0 6px 20px rgba(23, 162, 184, 0.2);
     }
     
-    /* Footer */
+    .ocr-result::before {
+        content: '🔤';
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        font-size: 2em;
+        opacity: 0.7;
+    }
+    
+    /* Enhanced spinner styling */
+    .stSpinner {
+        text-align: center;
+        padding: 20px;
+    }
+    
+    .stSpinner > div > div {
+        border-color: #007bff transparent transparent transparent;
+        border-width: 4px;
+    }
+    
+    /* Column styling */
+    .css-1lcbmhc {
+        background: rgba(255, 255, 255, 0.8);
+        border-radius: 10px;
+        padding: 15px;
+        margin: 5px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Footer with enhanced styling */
     .footer {
         text-align: center;
-        color: #6c757d;
+        background: linear-gradient(135deg, #495057 0%, #343a40 100%);
+        color: white;
         margin-top: 50px;
-        padding: 20px;
-        border-top: 1px solid #dee2e6;
+        padding: 30px;
+        border-radius: 15px 15px 0 0;
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2);
+        position: relative;
+    }
+    
+    .footer::before {
+        content: '🚨';
+        font-size: 2em;
+        display: block;
+        margin-bottom: 10px;
+    }
+    
+    /* Progress bar styling */
+    .stProgress > div > div > div {
+        background: linear-gradient(90deg, #28a745, #20c997, #17a2b8);
+    }
+    
+    /* Sidebar styling if used */
+    .sidebar .sidebar-content {
+        background: linear-gradient(180deg, #f8f9fa 0%, #e9ecef 100%);
+    }
+    
+    /* Text input styling */
+    .stTextInput > div > div > input {
+        border-radius: 10px;
+        border: 2px solid #ced4da;
+        padding: 10px 15px;
+        transition: all 0.3s ease;
+    }
+    
+    .stTextInput > div > div > input:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+    }
+    
+    /* Select box styling */
+    .stSelectbox > div > div {
+        border-radius: 10px;
+        border: 2px solid #ced4da;
+        transition: all 0.3s ease;
+    }
+    
+    .stSelectbox > div > div:hover {
+        border-color: #007bff;
+    }
+    
+    /* Image styling */
+    .stImage {
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        transition: transform 0.3s ease;
+    }
+    
+    .stImage:hover {
+        transform: scale(1.02);
+    }
+    
+    /* JSON display styling */
+    .stJson {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 15px;
+        border: 1px solid #dee2e6;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -211,7 +459,7 @@ def log_report(payload, result):
 
 
 st.markdown('<h1 class="title">🚨 Accident Detection & License Plate OCR</h1>', unsafe_allow_html=True)
-st.markdown('<p class="subtitle">Advanced AI-powered accident detection with automatic license plate recognition and emergency reporting</p>', unsafe_allow_html=True)
+st.markdown('<p class="subtitle">🔍 Advanced AI-powered accident detection with automatic license plate recognition and 🚀 emergency reporting</p>', unsafe_allow_html=True)
 
 # Create two columns for the main content
 col1, col2 = st.columns([2, 1])
@@ -221,10 +469,10 @@ with col1:
     <div class="card">
         <h3 style="color: #007bff; margin-top: 0;">📋 How it works:</h3>
         <ol>
-            <li><strong>Upload</strong> an image containing a vehicle</li>
-            <li><strong>Detect</strong> accidents using AI vision models</li>
-            <li><strong>Extract</strong> license plate information via OCR</li>
-            <li><strong>Report</strong> incidents automatically via SMS</li>
+            <li><strong>📤 Upload</strong> an image containing a vehicle</li>
+            <li><strong>🤖 Detect</strong> accidents using AI vision models</li>
+            <li><strong>🔤 Extract</strong> license plate information via OCR</li>
+            <li><strong>📱 Report</strong> incidents automatically via SMS</li>
         </ol>
     </div>
     """, unsafe_allow_html=True)
@@ -234,10 +482,10 @@ with col2:
     <div class="card card-success">
         <h4 style="color: #28a745; margin-top: 0;">✅ Features:</h4>
         <ul style="margin-bottom: 0;">
-            <li>Real-time accident detection</li>
-            <li>License plate OCR</li>
-            <li>Emergency SMS alerts</li>
-            <li>Confidence scoring</li>
+            <li>🎯 Real-time accident detection</li>
+            <li>🔤 License plate OCR</li>
+            <li>📱 Emergency SMS alerts</li>
+            <li>📊 Confidence scoring</li>
         </ul>
     </div>
     """, unsafe_allow_html=True)
@@ -367,17 +615,17 @@ Emergency services have been notified."""
 st.markdown("""
 <div class="card">
     <h3 style="color: #007bff; margin-top: 0;">📤 Upload Image for Analysis</h3>
-    <p style="color: #6c757d;">Supported formats: JPG, JPEG, PNG, AVIF</p>
+    <p style="color: #6c757d;">Supported formats: JPG, JPEG, PNG, AVIF 📸</p>
 </div>
 """, unsafe_allow_html=True)
 
 uploaded_file = st.file_uploader("", type=["jpg", "jpeg", "png", "avif"], 
-                               help="Choose an image file to analyze for accidents and license plates")
+                               help="Choose an image file to analyze for accidents and license plates 🚗")
 
 if uploaded_file is not None:
     # Display the uploaded image in a styled container
     st.markdown('<div class="card">', unsafe_allow_html=True)
-    st.markdown('<h4 style="color: #28a745; margin-top: 0;">📸 Uploaded Image</h4>', unsafe_allow_html=True)
+    st.markdown('<h4 style="color: #28a745; margin-top: 0;">📸 Uploaded Image Preview</h4>', unsafe_allow_html=True)
     
     image = Image.open(uploaded_file)
     st.image(image, caption='', use_column_width=True, 
@@ -392,7 +640,7 @@ if uploaded_file is not None:
     </div>
     """, unsafe_allow_html=True)
     
-    if st.button('🚨 Detect Accident', key='detect_btn', help='Run AI accident detection on the uploaded image'):
+    if st.button('🚨 Detect Accident', key='detect_btn', help='Run AI accident detection on the uploaded image 🤖'):
         with st.spinner('🤖 Loading AI model and analyzing image...'):
             try:
                 MODEL_PATH = "runs/accident_detector2/weights/best.pt"
@@ -420,14 +668,14 @@ if uploaded_file is not None:
                         class_name = model.names[cls]
                         st.markdown(f"""
                         <div style="background: #ffe6e6; border-left: 4px solid #dc3545; padding: 10px; margin: 5px 0; border-radius: 5px;">
-                            <strong>{class_name}</strong> - Confidence: <span style="color: #dc3545; font-weight: bold;">{conf:.2f}</span>
+                            <strong>🚨 {class_name}</strong> - Confidence: <span style="color: #dc3545; font-weight: bold;">{conf:.2f}</span>
                         </div>
                         """, unsafe_allow_html=True)
                 else:
                     st.markdown("""
                     <div class="success-msg">
                         <h5 style="margin-top: 0;">✅ No Accidents Detected</h5>
-                        <p>The image appears to be safe with no accident indicators found.</p>
+                        <p>The image appears to be safe with no accident indicators found. 👍</p>
                     </div>
                     """, unsafe_allow_html=True)
 
@@ -452,7 +700,7 @@ if uploaded_file is not None:
     """, unsafe_allow_html=True)
     
     if st.button('📝 Read License Plate & Prepare Report', key='ocr_btn', 
-                help='Extract license plate text and prepare emergency report'):
+                help='Extract license plate text and prepare emergency report 📋'):
         st.session_state.show_ocr_form = True
 
     if st.session_state.show_ocr_form:
@@ -468,13 +716,13 @@ if uploaded_file is not None:
                         st.markdown(f"""
                         <div style="background: #e8f5e8; border: 2px solid #28a745; border-radius: 8px; padding: 15px; margin: 10px 0;">
                             <h5 style="color: #28a745; margin-top: 0;">🎯 Top Match: {text}</h5>
-                            <p style="margin-bottom: 0;">Confidence: <strong>{conf:.2f}</strong></p>
+                            <p style="margin-bottom: 0;">Confidence: <strong>{conf:.2f}</strong> 🎯</p>
                         </div>
                         """, unsafe_allow_html=True)
                     else:
                         st.markdown(f"""
                         <div style="background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 5px; padding: 10px; margin: 5px 0;">
-                            <strong>{text}</strong> (confidence: {conf:.2f})
+                            <strong>🔤 {text}</strong> (confidence: {conf:.2f})
                         </div>
                         """, unsafe_allow_html=True)
 
@@ -483,7 +731,7 @@ if uploaded_file is not None:
                 st.markdown('<h5 style="color: #17a2b8;">📍 Selected License Plate:</h5>', unsafe_allow_html=True)
                 st.markdown(f"""
                 <div style="background: #fff3cd; border: 2px solid #ffc107; border-radius: 8px; padding: 15px; font-size: 1.2em; font-weight: bold; text-align: center; color: #856404;">
-                    {top_text}
+                    🚗 {top_text} 🚗
                 </div>
                 """, unsafe_allow_html=True)
 
@@ -531,7 +779,7 @@ if uploaded_file is not None:
                     st.markdown("""
                     <div class="success-msg">
                         <h5 style="margin-top: 0;">📱 Twilio Credentials Found</h5>
-                        <p>Emergency SMS will be sent automatically.</p>
+                        <p>Emergency SMS will be sent automatically. 🚀</p>
                     </div>
                     """, unsafe_allow_html=True)
                     
@@ -545,7 +793,7 @@ if uploaded_file is not None:
                     st.markdown("""
                     <div class="warning-msg">
                         <h5 style="margin-top: 0;">⚠️ Twilio Setup Required</h5>
-                        <p>No Twilio credentials detected. Configure below to enable automatic SMS alerts.</p>
+                        <p>No Twilio credentials detected. Configure below to enable automatic SMS alerts. 📱</p>
                     </div>
                     """, unsafe_allow_html=True)
 
@@ -641,14 +889,14 @@ if uploaded_file is not None:
                     # Add a close button to dismiss the form
                     st.markdown('<br>', unsafe_allow_html=True)
                     if st.button('❌ Close Report Form', key='close_ocr_form',
-                               help='Close the license plate and reporting section'):
+                               help='Close the license plate and reporting section 🔒'):
                         st.session_state.show_ocr_form = False
                         st.rerun()
             else:
                 st.markdown("""
                 <div class="warning-msg">
                     <h5 style="margin-top: 0;">🔍 No License Plates Found</h5>
-                    <p>The OCR analysis didn't detect any license-plate-like text in the image.</p>
+                    <p>The OCR analysis didn't detect any license-plate-like text in the image. 🤔</p>
                 </div>
                 """, unsafe_allow_html=True)
 
