@@ -8,35 +8,74 @@ import re
 import json
 import requests
 import numpy as np
-
 import csv
 from datetime import datetime
 
+# Basic startup check
+try:
+    # Test that we can import all required modules
+    import streamlit as st
+    from ultralytics import YOLO
+    from PIL import Image
+    import easyocr
+    import numpy as np
+    import csv
+    from datetime import datetime
+    
+    # Test model file exists
+    MODEL_PATH = "runs/accident_detector2/weights/best.pt"
+    if not os.path.exists(MODEL_PATH):
+        st.error(f"Model file not found: {MODEL_PATH}")
+        st.stop()
+    
+    STARTUP_OK = True
+except Exception as e:
+    st.error(f"Startup error: {e}")
+    STARTUP_OK = False
+    st.stop()
+
+if not STARTUP_OK:
+    st.stop()
+
 def log_report(payload, result):
-    log_path = "runs/reports.csv"
-    try:
-        st = __import__('streamlit')
-        st.info(f"[DEBUG] Attempting to write log to: {os.path.abspath(log_path)}")
-        is_new = not os.path.exists(log_path)
-        with open(log_path, "a", newline="") as f:
-            writer = csv.writer(f)
-            if is_new:
-                writer.writerow(["timestamp", "plate", "confidence", "location", "status", "sid", "error", "raw_result"])
-            writer.writerow([
-                datetime.now().isoformat(),
-                payload.get("plate"),
-                payload.get("confidence"),
-                (payload.get("extra") or {}).get("location"),
-                result.get("status"),
-                result.get("sid", ""),
-                result.get("error", ""),
-                str(result)
-            ])
-        st.info("[DEBUG] Log write successful.")
-    except Exception as e:
+    # Try multiple possible log locations for deployment compatibility
+    possible_paths = [
+        "runs/reports.csv",
+        "/tmp/reports.csv",
+        "./reports.csv"
+    ]
+    
+    log_written = False
+    for log_path in possible_paths:
+        try:
+            # Ensure directory exists
+            os.makedirs(os.path.dirname(log_path), exist_ok=True)
+            
+            is_new = not os.path.exists(log_path)
+            with open(log_path, "a", newline="") as f:
+                writer = csv.writer(f)
+                if is_new:
+                    writer.writerow(["timestamp", "plate", "confidence", "location", "status", "sid", "error", "raw_result"])
+                writer.writerow([
+                    datetime.now().isoformat(),
+                    payload.get("plate"),
+                    payload.get("confidence"),
+                    (payload.get("extra") or {}).get("location"),
+                    result.get("status"),
+                    result.get("sid", ""),
+                    result.get("error", ""),
+                    str(result)
+                ])
+            log_written = True
+            break  # Success, no need to try other paths
+        except Exception as e:
+            continue  # Try next path
+    
+    # Only show debug messages if logging failed completely
+    if not log_written:
         try:
             st = __import__('streamlit')
-            st.error(f"[DEBUG] Exception in log_report: {e}")
+            st.warning("Could not write to any log location. Reports will not be saved.")
         except Exception:
             pass
 
