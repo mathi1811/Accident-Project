@@ -1,0 +1,7 @@
+streamlit
+ultralytics
+pillow
+easyocr
+opencv-python-headless
+requests
+twilio
