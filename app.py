@@ -32,8 +32,7 @@ st.markdown("""
     }
     /* Full screen layout */
     .main {
-        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #3a7bd5 100%);
-        background-attachment: fixed;
+        background: #f5f7fa;
         min-height: 100vh;
         width: 100vw;
         margin: 0;
@@ -42,77 +41,38 @@ st.markdown("""
 
     /* App container with subtle colored background */
     .block-container {
-        background: linear-gradient(135deg,
-            rgba(240, 248, 255, 0.95) 0%,
-            rgba(248, 250, 252, 0.95) 25%,
-            rgba(255, 250, 240, 0.95) 50%,
-            rgba(248, 252, 248, 0.95) 75%,
-            rgba(252, 248, 255, 0.95) 100%);
+        background: #ffffff;
         border-radius: 0;
         margin: 0;
         padding: 20px;
         min-height: 100vh;
         box-shadow: none;
-        backdrop-filter: blur(10px);
         width: 100%;
         max-width: none;
         position: relative;
     }
 
-    .block-container::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="subtle-pattern" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="1" fill="rgba(0,123,255,0.05)"/><circle cx="10" cy="10" r="0.3" fill="rgba(40,167,69,0.03)"/></pattern></defs><rect width="100" height="100" fill="url(%23subtle-pattern)"/></svg>');
-        opacity: 0.3;
-        pointer-events: none;
-    }
+    .block-container::before { display: none; }
 
-    /* Title with clean, single color styling */
+    /* Title with clean, professional styling */
     .title {
-        font-size: 3.2em;
-        font-weight: 900;
+        font-size: 2.8em;
+        font-weight: 700;
         text-align: center;
-        margin-bottom: 25px;
-        color: #ffffff;
-        text-shadow:
-            2px 2px 4px rgba(0, 0, 0, 0.8),
-            0 0 20px rgba(255, 107, 107, 0.6);
-        padding: 25px 30px;
-        border-radius: 20px;
-        background: linear-gradient(135deg, rgba(220, 53, 69, 0.9), rgba(255, 107, 107, 0.8));
-        border: 3px solid #ffffff;
-        display: inline-block;
+        margin-bottom: 20px;
+        color: #1f2937;
+        padding: 14px 20px;
+        border-radius: 8px;
+        background: #ffffff;
+        border: 1px solid #d1d5db;
         width: 100%;
         box-sizing: border-box;
-        font-family: 'Arial Black', 'Impact', 'Helvetica Bold', Arial, sans-serif;
-        letter-spacing: 2px;
+        font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+        letter-spacing: 0.5px;
         line-height: 1.1;
-        position: relative;
     }
 
-    .title::before {
-        content: '🚨';
-        position: absolute;
-        left: 20px;
-        top: 50%;
-        transform: translateY(-50%);
-        font-size: 0.8em;
-        animation: bounce 1s infinite;
-    }
-
-    .title::after {
-        content: '🚨';
-        position: absolute;
-        right: 20px;
-        top: 50%;
-        transform: translateY(-50%);
-        font-size: 0.8em;
-        animation: bounce 1s infinite 0.5s;
-    }
+    .title::before, .title::after { content: none; }
 
     @keyframes bounce {
         0%, 20%, 50%, 80%, 100% { transform: translateY(-50%) scale(1); }
@@ -120,25 +80,21 @@ st.markdown("""
         60% { transform: translateY(-50%) scale(0.9); }
     }
 
-    /* Subtitle with clean styling */
     .subtitle {
-        font-size: 1.6em;
+        font-size: 1.2em;
         text-align: center;
-        margin-bottom: 40px;
-        font-weight: 700;
-        color: #2c3e50;
-        background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 249, 250, 0.95));
-        padding: 25px 30px;
-        border-radius: 20px;
-        border: 3px solid rgba(102, 126, 234, 0.5);
-        backdrop-filter: blur(15px);
-        box-shadow:
-            0 10px 30px rgba(77, 150, 255, 0.3),
-            inset 0 1px 0 rgba(255, 255, 255, 0.2);
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, -apple-system, BlinkMacSystemFont, sans-serif;
+        margin-bottom: 28px;
+        font-weight: 500;
+        color: #4b5563;
+        background: #ffffff;
+        padding: 10px 15px;
+        border-radius: 8px;
+        border: 1px solid #d1d5db;
+        width: 100%;
+        box-sizing: border-box;
+        font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
         line-height: 1.4;
-        letter-spacing: 0.5px;
-        position: relative;
+        letter-spacing: 0.2px;
     }
 
     .subtitle::before {
@@ -345,21 +301,11 @@ st.markdown("""
         border-left-color: #ffc107;
     }
 
-    .card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(0,123,255,0.1)" stroke-width="1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
-        opacity: 0.1;
-        z-index: 1;
-    }
+    .card::before { display: none; }
 
     .card:hover {
-        transform: translateY(-8px) scale(1.02);
-        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        transform: none;
+        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.12);
     }
 
     .card > * {
@@ -369,130 +315,81 @@ st.markdown("""
 
     /* Card variants with different background colors */
     .card-danger {
-        background: linear-gradient(135deg, rgba(220, 53, 69, 0.1), rgba(255, 107, 107, 0.1));
-        border-left: 8px solid #dc3545;
+        background: #fee2e2;
+        border-left: 4px solid #dc2626;
     }
 
-    .card-danger::after {
-        content: '🚨';
-        position: absolute;
-        top: 20px;
-        right: 20px;
-        font-size: 2em;
-        opacity: 0.3;
-    }
+    .card-danger::after { content: none; }
 
     .card-success {
-        background: linear-gradient(135deg, rgba(40, 167, 69, 0.1), rgba(32, 201, 151, 0.1));
-        border-left: 8px solid #28a745;
+        background: #d1fae5;
+        border-left: 4px solid #16a34a;
     }
 
-    .card-success::after {
-        content: '✅';
-        position: absolute;
-        top: 20px;
-        right: 20px;
-        font-size: 2em;
-        opacity: 0.3;
-    }
+    .card-success::after { content: none; }
 
     .card-warning {
-        background: linear-gradient(135deg, rgba(255, 193, 7, 0.1), rgba(253, 126, 20, 0.1));
-        border-left: 8px solid #ffc107;
+        background: #fef9c3;
+        border-left: 4px solid #ca8a04;
     }
 
-    .card-warning::after {
-        content: '⚠️';
-        position: absolute;
-        top: 20px;
-        right: 20px;
-        font-size: 2em;
-        opacity: 0.3;
-    }
+    .card-warning::after { content: none; }
     
     /* Enhanced button styling with vibrant gradients */
     .stButton>button {
-        background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        border: none;
-        border-radius: 15px;
-        padding: 18px 35px;
-        font-weight: 800;
-        font-size: 18px;
-        transition: all 0.4s ease;
-        box-shadow:
-            0 8px 25px rgba(102, 126, 234, 0.4),
-            inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        background: #1f2937;
+        color: #ffffff;
+        border: 1px solid #4b5563;
+        border-radius: 8px;
+        padding: 12px 24px;
+        font-weight: 700;
+        font-size: 15px;
+        transition: all 0.2s ease;
+        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.2);
         position: relative;
-        overflow: hidden;
+        overflow: visible;
         width: 100%;
-        margin: 12px 0;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        border: 2px solid transparent;
-        background-clip: padding-box;
+        margin: 10px 0;
+        text-transform: none;
+        letter-spacing: 0.2px;
     }
 
-    .stButton>button::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-        transition: left 0.6s;
-        z-index: 1;
-    }
-
-    .stButton>button:hover::before {
-        left: 100%;
-    }
+    .stButton>button::before { content: none; }
 
     .stButton>button:hover {
-        background: linear-gradient(45deg, #764ba2 0%, #667eea 100%);
-        transform: translateY(-4px) scale(1.03);
-        box-shadow:
-            0 12px 35px rgba(102, 126, 234, 0.6),
-            inset 0 1px 0 rgba(255, 255, 255, 0.3);
-        border-color: rgba(255, 255, 255, 0.3);
+        background: #111827;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(15, 23, 42, 0.3);
+        border-color: #111827;
     }
 
     .stButton>button:active {
-        transform: translateY(-2px) scale(1.01);
-        box-shadow:
-            0 6px 15px rgba(102, 126, 234, 0.4),
-            inset 0 2px 4px rgba(0, 0, 0, 0.1);
+        transform: translateY(-1px); 
+        box-shadow: 0 2px 6px rgba(15, 23, 42, 0.2);
     }
 
     /* Danger button variant with vibrant red gradient */
     .stButton>button[data-testid*="detect"] {
-        background: linear-gradient(45deg, #ff6b6b 0%, #ee5a24 100%);
-        box-shadow:
-            0 8px 25px rgba(255, 107, 107, 0.4),
-            inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        background: #b91c1c;
+        border-color: #991b1b;
+        box-shadow: 0 2px 8px rgba(185, 28, 28, 0.35);
     }
 
     .stButton>button[data-testid*="detect"]:hover {
-        background: linear-gradient(45deg, #ee5a24 0%, #ff6b6b 100%);
-        box-shadow:
-            0 12px 35px rgba(255, 107, 107, 0.6),
-            inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        background: #991b1b;
+        box-shadow: 0 4px 10px rgba(185, 28, 28, 0.45);
     }
 
     /* Success button variant with vibrant green gradient */
     .stButton>button[data-testid*="ocr"] {
-        background: linear-gradient(45deg, #6bcf7f 0%, #28a745 100%);
-        box-shadow:
-            0 8px 25px rgba(107, 207, 127, 0.4),
-            inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        background: #047857;
+        border-color: #065f46;
+        box-shadow: 0 2px 8px rgba(4, 120, 87, 0.35);
     }
 
     .stButton>button[data-testid*="ocr"]:hover {
-        background: linear-gradient(45deg, #28a745 0%, #6bcf7f 100%);
-        box-shadow:
-            0 12px 35px rgba(107, 207, 127, 0.6),
-            inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        background: #065f46;
+        box-shadow: 0 4px 10px rgba(4, 120, 87, 0.45);
     }
     
     /* File uploader styling with vibrant design */
