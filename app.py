@@ -32,7 +32,7 @@ st.markdown("""
     }
     /* Full screen layout */
     .main {
-        background: #f5f7fa;
+        background: #f2f4f6;
         min-height: 100vh;
         width: 100vw;
         margin: 0;
@@ -41,6 +41,7 @@ st.markdown("""
 
     /* App container with subtle colored background */
     .block-container {
+        border: 1px solid #e5e7eb;
         background: #ffffff;
         border-radius: 0;
         margin: 0;
@@ -60,11 +61,11 @@ st.markdown("""
         font-weight: 700;
         text-align: center;
         margin-bottom: 20px;
-        color: #1f2937;
+        color: #0f172a;
         padding: 14px 20px;
         border-radius: 8px;
-        background: #ffffff;
-        border: 1px solid #d1d5db;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
         width: 100%;
         box-sizing: border-box;
         font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
@@ -85,8 +86,8 @@ st.markdown("""
         text-align: center;
         margin-bottom: 28px;
         font-weight: 500;
-        color: #4b5563;
-        background: #ffffff;
+        color: #334155;
+        background: #f8fafc;
         padding: 10px 15px;
         border-radius: 8px;
         border: 1px solid #d1d5db;
@@ -97,42 +98,23 @@ st.markdown("""
         letter-spacing: 0.2px;
     }
 
-    .subtitle::before {
-        content: '🔍';
-        position: absolute;
-        left: 20px;
-        top: 50%;
-        transform: translateY(-50%);
-        font-size: 1.5em;
-        opacity: 0.8;
-    }
+    .subtitle::before { content: none; }
     
     /* Special styling for How it Works section */
     .how-it-works-card {
-        background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(240, 248, 255, 0.9));
+        background: #ffffff;
         border-radius: 20px;
         padding: 30px;
         margin: 20px 0;
-        box-shadow: 0 10px 30px rgba(0, 123, 255, 0.15);
-        border: none;
-        transition: transform 0.4s ease, box-shadow 0.4s ease;
+        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+        border: 1px solid #dbeafe;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
         position: relative;
-        overflow: hidden;
-        backdrop-filter: blur(10px);
-        border-left: 8px solid #007bff;
+        overflow: visible;
+        border-left: 5px solid #3b82f6;
     }
 
-    .how-it-works-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="workflow" width="25" height="25" patternUnits="userSpaceOnUse"><circle cx="12.5" cy="12.5" r="3" fill="none" stroke="rgba(0,123,255,0.1)" stroke-width="1"/><path d="M12.5 6.5 L12.5 18.5 M6.5 12.5 L18.5 12.5" stroke="rgba(0,123,255,0.1)" stroke-width="1"/><text x="12.5" y="16" text-anchor="middle" font-size="6" fill="rgba(0,123,255,0.2)">→</text></pattern></defs><rect width="100" height="100" fill="url(%23workflow)"/></svg>');
-        opacity: 0.4;
-        z-index: 1;
-    }
+    .how-it-works-card::before { content: none; }
 
     .how-it-works-card:hover {
         transform: translateY(-5px) scale(1.02);
@@ -146,30 +128,19 @@ st.markdown("""
 
     /* Special styling for Features section */
     .features-card {
-        background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(240, 255, 240, 0.9));
+        background: #ffffff;
         border-radius: 20px;
         padding: 30px;
         margin: 20px 0;
-        box-shadow: 0 10px 30px rgba(40, 167, 69, 0.15);
-        border: none;
-        transition: transform 0.4s ease, box-shadow 0.4s ease;
+        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+        border: 1px solid #dcfce7;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
         position: relative;
-        overflow: hidden;
-        backdrop-filter: blur(10px);
-        border-left: 8px solid #28a745;
+        overflow: visible;
+        border-left: 5px solid #22c55e;
     }
 
-    .features-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="features" width="30" height="30" patternUnits="userSpaceOnUse"><circle cx="15" cy="15" r="4" fill="none" stroke="rgba(40,167,69,0.1)" stroke-width="2"/><path d="M10 15 L13 18 L20 11" stroke="rgba(40,167,69,0.2)" stroke-width="2" fill="none"/><circle cx="15" cy="15" r="1" fill="rgba(40,167,69,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23features)"/></svg>');
-        opacity: 0.4;
-        z-index: 1;
-    }
+    .features-card::before { content: none; }
 
     .features-card:hover {
         transform: translateY(-5px) scale(1.02);
@@ -219,42 +190,42 @@ st.markdown("""
         left: -15px;
         top: 50%;
         transform: translateY(-50%);
-        background: linear-gradient(45deg, #4d96ff, #6bcf7f);
+        background: #3b82f6;
         color: white;
-        width: 30px;
-        height: 30px;
+        width: 28px;
+        height: 28px;
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
         font-weight: bold;
-        font-size: 0.9em;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        font-size: 0.85em;
+        box-shadow: 0 2px 4px rgba(15, 23, 42, 0.1);
     }
 
     .how-it-works-card li:hover {
-        background: linear-gradient(135deg, rgba(77, 150, 255, 0.2), rgba(107, 207, 127, 0.2));
-        transform: translateX(8px) scale(1.02);
-        box-shadow: 0 8px 20px rgba(77, 150, 255, 0.3);
-        border-left-color: #6bcf7f;
+        background: #eff6ff;
+        transform: translateX(3px);
+        box-shadow: 0 4px 10px rgba(59, 130, 246, 0.15);
+        border-left-color: #2563eb;
     }
 
     .how-it-works-card strong {
-        color: #4d96ff;
-        font-weight: 800;
-        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        color: #1d4ed8;
+        font-weight: 700;
+        text-shadow: none;
     }
 
     .features-card h4 {
-        color: #ffffff !important;
+        color: #166534 !important;
         font-size: 1.6em;
         font-weight: 800;
         margin-bottom: 20px;
-        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-        background: linear-gradient(135deg, rgba(40, 167, 69, 0.9), rgba(255, 193, 7, 0.8));
+        text-shadow: none;
+        background: #ecfdf5;
         padding: 12px 18px;
         border-radius: 12px;
-        border: 2px solid #ffffff;
+        border: 1px solid #bbf7d0;
     }
 
     .features-card ul {
@@ -265,9 +236,9 @@ st.markdown("""
     .features-card li {
         margin-bottom: 15px;
         padding: 12px 18px;
-        background: linear-gradient(135deg, rgba(40, 167, 69, 0.1), rgba(255, 193, 7, 0.1));
+        background: #f0fdf4;
         border-radius: 10px;
-        border-left: 5px solid #28a745;
+        border-left: 4px solid #22c55e;
         transition: all 0.4s ease;
         position: relative;
         font-size: 1.1em;
@@ -281,24 +252,24 @@ st.markdown("""
         left: -12px;
         top: 50%;
         transform: translateY(-50%);
-        background: linear-gradient(45deg, #28a745, #ffc107);
+        background: #22c55e;
         color: white;
-        width: 24px;
-        height: 24px;
+        width: 22px;
+        height: 22px;
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
         font-weight: bold;
-        font-size: 0.8em;
-        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+        font-size: 0.75em;
+        box-shadow: 0 2px 4px rgba(15, 23, 42, 0.1);
     }
 
     .features-card li:hover {
-        background: linear-gradient(135deg, rgba(40, 167, 69, 0.2), rgba(255, 193, 7, 0.2));
-        transform: translateX(8px) scale(1.02);
-        box-shadow: 0 8px 20px rgba(40, 167, 69, 0.3);
-        border-left-color: #ffc107;
+        background: #dbfcdc;
+        transform: translateX(3px);
+        box-shadow: 0 4px 10px rgba(34, 197, 94, 0.2);
+        border-left-color: #16a34a;
     }
 
     .card::before { display: none; }
@@ -337,15 +308,15 @@ st.markdown("""
     
     /* Enhanced button styling with vibrant gradients */
     .stButton>button {
-        background: #1f2937;
-        color: #ffffff;
-        border: 1px solid #4b5563;
+        background: #f9fafb;
+        color: #1f2937;
+        border: 1px solid #cbd5e1;
         border-radius: 8px;
         padding: 12px 24px;
         font-weight: 700;
         font-size: 15px;
         transition: all 0.2s ease;
-        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.2);
+        box-shadow: 0 1px 4px rgba(15, 23, 42, 0.08);
         position: relative;
         overflow: visible;
         width: 100%;
@@ -357,10 +328,10 @@ st.markdown("""
     .stButton>button::before { content: none; }
 
     .stButton>button:hover {
-        background: #111827;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 10px rgba(15, 23, 42, 0.3);
-        border-color: #111827;
+        background: #eef2f7;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 6px rgba(15, 23, 42, 0.1);
+        border-color: #cbd5e1;
     }
 
     .stButton>button:active {
@@ -370,93 +341,79 @@ st.markdown("""
 
     /* Danger button variant with vibrant red gradient */
     .stButton>button[data-testid*="detect"] {
-        background: #b91c1c;
-        border-color: #991b1b;
-        box-shadow: 0 2px 8px rgba(185, 28, 28, 0.35);
+        background: #2563eb;
+        border-color: #1d4ed8;
+        color: #ffffff;
+        box-shadow: 0 2px 6px rgba(37, 99, 235, 0.3);
     }
 
     .stButton>button[data-testid*="detect"]:hover {
-        background: #991b1b;
-        box-shadow: 0 4px 10px rgba(185, 28, 28, 0.45);
+        background: #1d4ed8;
+        box-shadow: 0 4px 8px rgba(37, 99, 235, 0.35);
     }
 
     /* Success button variant with vibrant green gradient */
     .stButton>button[data-testid*="ocr"] {
-        background: #047857;
-        border-color: #065f46;
-        box-shadow: 0 2px 8px rgba(4, 120, 87, 0.35);
+        background: #16a34a;
+        border-color: #15803d;
+        color: #ffffff;
+        box-shadow: 0 2px 6px rgba(22, 163, 74, 0.3);
     }
 
     .stButton>button[data-testid*="ocr"]:hover {
-        background: #065f46;
-        box-shadow: 0 4px 10px rgba(4, 120, 87, 0.45);
+        background: #15803d;
+        box-shadow: 0 4px 8px rgba(22, 163, 74, 0.35);
     }
     
     /* File uploader styling with vibrant design */
     .uploadedFile {
-        border: 4px dashed;
-        border-image: linear-gradient(45deg, #667eea, #764ba2, #ff6b6b, #6bcf7f) 1;
-        border-radius: 20px;
-        padding: 50px 40px;
+        border: 2px dashed #cbd5e1;
+        border-radius: 16px;
+        padding: 36px 30px;
         text-align: center;
-        background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 249, 255, 0.9));
-        transition: all 0.5s ease;
+        background: #f8fafc;
+        transition: all 0.2s ease;
         position: relative;
-        overflow: hidden;
-        backdrop-filter: blur(15px);
+        overflow: visible;
         width: 100%;
-        margin: 25px 0;
-        box-shadow:
-            0 10px 30px rgba(102, 126, 234, 0.2),
-            inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        margin: 20px 0;
+        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
     }
 
-    .uploadedFile::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="upload-pattern" width="25" height="25" patternUnits="userSpaceOnUse"><circle cx="12.5" cy="12.5" r="2" fill="none" stroke="rgba(102,126,234,0.1)" stroke-width="1"/><path d="M8 12.5 L12.5 17.5 L17 12.5 M12.5 8 L12.5 17.5" stroke="rgba(102,126,234,0.15)" stroke-width="1.5" fill="none"/></pattern></defs><rect width="100" height="100" fill="url(%23upload-pattern)"/></svg>');
-        opacity: 0.6;
-        z-index: 1;
-    }
+    .uploadedFile::before { content: none; }
 
     .uploadedFile:hover {
-        border-color: transparent;
-        background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(248, 249, 255, 0.95));
-        transform: translateY(-5px) scale(1.02);
-        box-shadow:
-            0 15px 40px rgba(102, 126, 234, 0.3),
-            inset 0 1px 0 rgba(255, 255, 255, 0.4);
+        border-color: #94a3b8;
+        background: #eef2f7;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.1);
     }
 
     .uploadedFile::after {
-        content: '📤 Drop your image here or click to browse 📸';
+        content: 'Drop your image here or click to browse';
         position: absolute;
-        bottom: 25px;
+        bottom: 18px;
         left: 50%;
         transform: translateX(-50%);
-        font-size: 1.3em;
-        color: #667eea;
-        font-weight: 700;
-        opacity: 0.9;
-        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        font-size: 1.1em;
+        color: #334155;
+        font-weight: 600;
+        opacity: 0.85;
+        text-shadow: none;
         z-index: 2;
-        letter-spacing: 0.5px;
+        letter-spacing: 0.2px;
     }
     
     /* Enhanced message styling with icons */
     .success-msg {
-        background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
-        color: #155724;
-        border: 2px solid #28a745;
+        background: #d1fae5;
+        color: #14532d;
+        border: 1px solid #22c55e;
         border-radius: 10px;
         padding: 15px;
         margin: 15px 0;
         position: relative;
-        box-shadow: 0 4px 12px rgba(40, 167, 69, 0.2);
+        box-shadow: 0 2px 6px rgba(34, 197, 94, 0.15);
     }
     
     .success-msg::before {
@@ -466,14 +423,14 @@ st.markdown("""
     }
     
     .warning-msg {
-        background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
-        color: #856404;
-        border: 2px solid #ffc107;
+        background: #fef9c3;
+        color: #7c2d12;
+        border: 1px solid #f59e0b;
         border-radius: 10px;
         padding: 15px;
         margin: 15px 0;
         position: relative;
-        box-shadow: 0 4px 12px rgba(255, 193, 7, 0.2);
+        box-shadow: 0 2px 6px rgba(245, 158, 11, 0.15);
     }
     
     .warning-msg::before {
@@ -483,14 +440,14 @@ st.markdown("""
     }
     
     .error-msg {
-        background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
-        color: #721c24;
-        border: 2px solid #dc3545;
+        background: #fee2e2;
+        color: #991b1b;
+        border: 1px solid #dc2626;
         border-radius: 10px;
         padding: 15px;
         margin: 15px 0;
         position: relative;
-        box-shadow: 0 4px 12px rgba(220, 53, 69, 0.2);
+        box-shadow: 0 2px 6px rgba(220, 53, 69, 0.15);
     }
     
     .error-msg::before {
