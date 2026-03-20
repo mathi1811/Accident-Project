@@ -1138,14 +1138,14 @@ if uploaded_file is not None:
                 
                 with col2:
                     st.markdown('<br>', unsafe_allow_html=True)  # Spacing
-                    st.markdown("""
+                    st.markdown(f"""
                     <div style="background: #f8f9fa; border-radius: 8px; padding: 15px; margin-top: 10px;">
                         <h5 style="color: #6c757d; margin-top: 0;">📊 Report Summary</h5>
                         <p style="margin-bottom: 5px;"><strong>Plate:</strong> {top_text}</p>
                         <p style="margin-bottom: 5px;"><strong>Confidence:</strong> {top_conf:.2f}</p>
                         <p style="margin-bottom: 0;"><strong>Location:</strong> {location or 'Not specified'}</p>
                     </div>
-                    """.format(top_text=top_text, top_conf=top_conf, location=location or 'Not specified'), 
+                    """,
                     unsafe_allow_html=True)
 
                 # Auto-send SMS if Twilio credentials are available either in env or session
