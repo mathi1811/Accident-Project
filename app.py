@@ -32,7 +32,7 @@ st.markdown("""
     }
     /* Full screen layout */
     .main {
-        background: #f2f4f6;
+        background: #ffffff;
         min-height: 100vh;
         width: 100vw;
         margin: 0;
@@ -57,15 +57,15 @@ st.markdown("""
 
     /* Title with clean, professional styling */
     .title {
-        font-size: 2.8em;
+        font-size: 2.4em;
         font-weight: 700;
         text-align: center;
         margin-bottom: 20px;
         color: #0f172a;
-        padding: 14px 20px;
-        border-radius: 8px;
-        background: #f8fafc;
-        border: 1px solid #e2e8f0;
+        padding: 10px 14px;
+        border-radius: 6px;
+        background: transparent;
+        border: none;
         width: 100%;
         box-sizing: border-box;
         font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
@@ -82,15 +82,15 @@ st.markdown("""
     }
 
     .subtitle {
-        font-size: 1.2em;
+        font-size: 1.1em;
         text-align: center;
-        margin-bottom: 28px;
+        margin-bottom: 20px;
         font-weight: 500;
         color: #334155;
-        background: #f8fafc;
-        padding: 10px 15px;
-        border-radius: 8px;
-        border: 1px solid #d1d5db;
+        background: transparent;
+        padding: 8px 12px;
+        border-radius: 0;
+        border: none;
         width: 100%;
         box-sizing: border-box;
         font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
@@ -103,22 +103,22 @@ st.markdown("""
     /* Special styling for How it Works section */
     .how-it-works-card {
         background: #ffffff;
-        border-radius: 20px;
+        border-radius: 12px;
         padding: 30px;
         margin: 20px 0;
-        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
-        border: 1px solid #dbeafe;
+        box-shadow: none;
+        border: 1px solid #e5e7eb;
         transition: transform 0.2s ease, box-shadow 0.2s ease;
         position: relative;
         overflow: visible;
-        border-left: 5px solid #3b82f6;
+        border-left: 5px solid #e5e7eb;
     }
 
     .how-it-works-card::before { content: none; }
 
     .how-it-works-card:hover {
-        transform: translateY(-5px) scale(1.02);
-        box-shadow: 0 15px 40px rgba(0, 123, 255, 0.25);
+        transform: none;
+        box-shadow: none;
     }
 
     .how-it-works-card > * {
@@ -129,22 +129,22 @@ st.markdown("""
     /* Special styling for Features section */
     .features-card {
         background: #ffffff;
-        border-radius: 20px;
+        border-radius: 12px;
         padding: 30px;
         margin: 20px 0;
-        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
-        border: 1px solid #dcfce7;
+        box-shadow: none;
+        border: 1px solid #e5e7eb;
         transition: transform 0.2s ease, box-shadow 0.2s ease;
         position: relative;
         overflow: visible;
-        border-left: 5px solid #22c55e;
+        border-left: 5px solid #e5e7eb;
     }
 
     .features-card::before { content: none; }
 
     .features-card:hover {
-        transform: translateY(-5px) scale(1.02);
-        box-shadow: 0 15px 40px rgba(40, 167, 69, 0.25);
+        transform: none;
+        box-shadow: none;
     }
 
     .features-card > * {
@@ -154,15 +154,15 @@ st.markdown("""
 
     /* Enhanced list styling with vibrant colors */
     .how-it-works-card h3 {
-        color: #ffffff !important;
-        font-size: 1.8em;
-        font-weight: 800;
-        margin-bottom: 25px;
-        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-        background: linear-gradient(135deg, rgba(77, 150, 255, 0.9), rgba(107, 207, 127, 0.8));
-        padding: 15px 20px;
-        border-radius: 15px;
-        border: 2px solid #ffffff;
+        color: #0f172a !important;
+        font-size: 1.6em;
+        font-weight: 700;
+        margin-bottom: 12px;
+        text-shadow: none;
+        background: transparent;
+        padding: 0;
+        border-radius: 0;
+        border: none;
     }
 
     .how-it-works-card ol {
@@ -171,17 +171,17 @@ st.markdown("""
     }
 
     .how-it-works-card li {
-        margin-bottom: 18px;
-        padding: 15px 20px;
-        background: linear-gradient(135deg, rgba(77, 150, 255, 0.1), rgba(107, 207, 127, 0.1));
-        border-radius: 12px;
-        border-left: 5px solid #4d96ff;
+        margin-bottom: 12px;
+        padding: 10px 14px;
+        background: #ffffff;
+        border-radius: 6px;
+        border-left: 4px solid #e5e7eb;
         transition: all 0.4s ease;
         position: relative;
         counter-increment: step-counter;
         font-size: 1.1em;
         font-weight: 600;
-        color: #2c3e50;
+        color: #1f2937;
     }
 
     .how-it-works-card li::before {
@@ -204,28 +204,28 @@ st.markdown("""
     }
 
     .how-it-works-card li:hover {
-        background: #eff6ff;
-        transform: translateX(3px);
-        box-shadow: 0 4px 10px rgba(59, 130, 246, 0.15);
-        border-left-color: #2563eb;
+        background: #f9fafb;
+        transform: none;
+        box-shadow: none;
+        border-left-color: #e5e7eb;
     }
 
     .how-it-works-card strong {
-        color: #1d4ed8;
+        color: #0f172a;
         font-weight: 700;
         text-shadow: none;
     }
 
     .features-card h4 {
-        color: #166534 !important;
+        color: #0f172a !important;
         font-size: 1.6em;
-        font-weight: 800;
-        margin-bottom: 20px;
+        font-weight: 700;
+        margin-bottom: 12px;
         text-shadow: none;
-        background: #ecfdf5;
-        padding: 12px 18px;
-        border-radius: 12px;
-        border: 1px solid #bbf7d0;
+        background: transparent;
+        padding: 0;
+        border-radius: 0;
+        border: none;
     }
 
     .features-card ul {
@@ -234,16 +234,16 @@ st.markdown("""
     }
 
     .features-card li {
-        margin-bottom: 15px;
-        padding: 12px 18px;
-        background: #f0fdf4;
-        border-radius: 10px;
-        border-left: 4px solid #22c55e;
+        margin-bottom: 10px;
+        padding: 10px 14px;
+        background: #ffffff;
+        border-radius: 6px;
+        border-left: 4px solid #e5e7eb;
         transition: all 0.4s ease;
         position: relative;
         font-size: 1.1em;
         font-weight: 600;
-        color: #2c3e50;
+        color: #1f2937;
     }
 
     .features-card li::before {
@@ -266,10 +266,10 @@ st.markdown("""
     }
 
     .features-card li:hover {
-        background: #dbfcdc;
-        transform: translateX(3px);
-        box-shadow: 0 4px 10px rgba(34, 197, 94, 0.2);
-        border-left-color: #16a34a;
+        background: #f9fafb;
+        transform: none;
+        box-shadow: none;
+        border-left-color: #e5e7eb;
     }
 
     .card::before { display: none; }
@@ -308,15 +308,15 @@ st.markdown("""
     
     /* Enhanced button styling with vibrant gradients */
     .stButton>button {
-        background: #f9fafb;
+        background: #ffffff;
         color: #1f2937;
-        border: 1px solid #cbd5e1;
+        border: 1px solid #d1d5db;
         border-radius: 8px;
         padding: 12px 24px;
         font-weight: 700;
         font-size: 15px;
         transition: all 0.2s ease;
-        box-shadow: 0 1px 4px rgba(15, 23, 42, 0.08);
+        box-shadow: none;
         position: relative;
         overflow: visible;
         width: 100%;
@@ -328,10 +328,10 @@ st.markdown("""
     .stButton>button::before { content: none; }
 
     .stButton>button:hover {
-        background: #eef2f7;
-        transform: translateY(-1px);
-        box-shadow: 0 2px 6px rgba(15, 23, 42, 0.1);
-        border-color: #cbd5e1;
+        background: #ffffff;
+        transform: none;
+        box-shadow: none;
+        border-color: #d1d5db;
     }
 
     .stButton>button:active {
@@ -341,52 +341,52 @@ st.markdown("""
 
     /* Danger button variant with vibrant red gradient */
     .stButton>button[data-testid*="detect"] {
-        background: #2563eb;
-        border-color: #1d4ed8;
-        color: #ffffff;
-        box-shadow: 0 2px 6px rgba(37, 99, 235, 0.3);
+        background: #f9fafb;
+        border-color: #d1d5db;
+        color: #1f2937;
+        box-shadow: none;
     }
 
     .stButton>button[data-testid*="detect"]:hover {
-        background: #1d4ed8;
-        box-shadow: 0 4px 8px rgba(37, 99, 235, 0.35);
+        background: #ffffff;
+        box-shadow: none;
     }
 
     /* Success button variant with vibrant green gradient */
     .stButton>button[data-testid*="ocr"] {
-        background: #16a34a;
-        border-color: #15803d;
-        color: #ffffff;
-        box-shadow: 0 2px 6px rgba(22, 163, 74, 0.3);
+        background: #f9fafb;
+        border-color: #d1d5db;
+        color: #1f2937;
+        box-shadow: none;
     }
 
     .stButton>button[data-testid*="ocr"]:hover {
-        background: #15803d;
-        box-shadow: 0 4px 8px rgba(22, 163, 74, 0.35);
+        background: #ffffff;
+        box-shadow: none;
     }
     
     /* File uploader styling with vibrant design */
     .uploadedFile {
-        border: 2px dashed #cbd5e1;
-        border-radius: 16px;
-        padding: 36px 30px;
+        border: 1px solid #d1d5db;
+        border-radius: 12px;
+        padding: 28px 20px;
         text-align: center;
-        background: #f8fafc;
+        background: #ffffff;
         transition: all 0.2s ease;
         position: relative;
         overflow: visible;
         width: 100%;
         margin: 20px 0;
-        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
+        box-shadow: none;
     }
 
     .uploadedFile::before { content: none; }
 
     .uploadedFile:hover {
-        border-color: #94a3b8;
-        background: #eef2f7;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.1);
+        border-color: #d1d5db;
+        background: #ffffff;
+        transform: none;
+        box-shadow: none;
     }
 
     .uploadedFile::after {
@@ -395,25 +395,25 @@ st.markdown("""
         bottom: 18px;
         left: 50%;
         transform: translateX(-50%);
-        font-size: 1.1em;
-        color: #334155;
-        font-weight: 600;
-        opacity: 0.85;
+        font-size: 1.0em;
+        color: #1f2937;
+        font-weight: 500;
+        opacity: 0.75;
         text-shadow: none;
         z-index: 2;
-        letter-spacing: 0.2px;
+        letter-spacing: 0.1px;
     }
     
     /* Enhanced message styling with icons */
     .success-msg {
-        background: #d1fae5;
-        color: #14532d;
-        border: 1px solid #22c55e;
+        background: #f7fdf8;
+        color: #0f172a;
+        border: 1px solid #d1d5db;
         border-radius: 10px;
         padding: 15px;
         margin: 15px 0;
         position: relative;
-        box-shadow: 0 2px 6px rgba(34, 197, 94, 0.15);
+        box-shadow: none;
     }
     
     .success-msg::before {
@@ -423,14 +423,14 @@ st.markdown("""
     }
     
     .warning-msg {
-        background: #fef9c3;
-        color: #7c2d12;
-        border: 1px solid #f59e0b;
+        background: #fefcf2;
+        color: #0f172a;
+        border: 1px solid #d1d5db;
         border-radius: 10px;
         padding: 15px;
         margin: 15px 0;
         position: relative;
-        box-shadow: 0 2px 6px rgba(245, 158, 11, 0.15);
+        box-shadow: none;
     }
     
     .warning-msg::before {
@@ -440,14 +440,14 @@ st.markdown("""
     }
     
     .error-msg {
-        background: #fee2e2;
-        color: #991b1b;
-        border: 1px solid #dc2626;
+        background: #fff5f5;
+        color: #0f172a;
+        border: 1px solid #d1d5db;
         border-radius: 10px;
         padding: 15px;
         margin: 15px 0;
         position: relative;
-        box-shadow: 0 2px 6px rgba(220, 53, 69, 0.15);
+        box-shadow: none;
     }
     
     .error-msg::before {
@@ -711,8 +711,8 @@ def log_report(payload, result):
 
 
 
-st.markdown('<h1 class="title">🚨 Accident Detection & License Plate OCR</h1>', unsafe_allow_html=True)
-st.markdown('<p class="subtitle">🔍 Advanced AI-powered accident detection with automatic license plate recognition and 🚀 emergency reporting</p>', unsafe_allow_html=True)
+st.markdown('<h1 class="title">Accident Detection & License Plate OCR</h1>', unsafe_allow_html=True)
+st.markdown('<p class="subtitle">Advanced AI-powered accident detection with automatic license plate recognition and emergency reporting</p>', unsafe_allow_html=True)
 
 # Create two columns for the main content
 col1, col2 = st.columns([2, 1])
@@ -720,7 +720,7 @@ col1, col2 = st.columns([2, 1])
 with col1:
     st.markdown("""
     <div class="how-it-works-card">
-        <h3 style="color: #007bff; margin-top: 0;">📋 How it works:</h3>
+        <h3 style="color: #0f172a; margin-top: 0;">How it works:</h3>
         <ol>
             <li><strong>📤 Upload</strong> an image containing a vehicle</li>
             <li><strong>🤖 Detect</strong> accidents using AI vision models</li>
@@ -733,7 +733,7 @@ with col1:
 with col2:
     st.markdown("""
     <div class="features-card">
-        <h4 style="color: #28a745; margin-top: 0;">✅ Features:</h4>
+        <h4 style="color: #0f172a; margin-top: 0;">Features:</h4>
         <ul style="margin-bottom: 0;">
             <li>🎯 Real-time accident detection</li>
             <li>🔤 License plate OCR</li>
@@ -867,8 +867,8 @@ Emergency services have been notified."""
 
 st.markdown("""
 <div class="card detection-section">
-    <h3 style="color: #007bff; margin-top: 0;">📤 Upload Image for Analysis</h3>
-    <p style="color: #6c757d;">Supported formats: JPG, JPEG, PNG, AVIF 📸</p>
+    <h3 style="color: #0f172a; margin-top: 0;">Upload Image for Analysis</h3>
+    <p style="color: #1f2937;">Supported formats: JPG, JPEG, PNG, AVIF</p>
 </div>
 """, unsafe_allow_html=True)
 
@@ -878,7 +878,7 @@ uploaded_file = st.file_uploader("", type=["jpg", "jpeg", "png", "avif"],
 if uploaded_file is not None:
     # Display the uploaded image in a styled container
     st.markdown('<div class="card">', unsafe_allow_html=True)
-    st.markdown('<h4 style="color: #28a745; margin-top: 0;">📸 Uploaded Image Preview</h4>', unsafe_allow_html=True)
+    st.markdown('<h4 style="color: #0f172a; margin-top: 0;">Uploaded Image Preview</h4>', unsafe_allow_html=True)
     
     image = Image.open(uploaded_file)
     st.image(image, caption='', use_column_width=True, 
@@ -889,7 +889,7 @@ if uploaded_file is not None:
     # Detection button with custom styling
     st.markdown("""
     <div style="text-align: center; margin: 20px 0;">
-        <h4 style="color: #dc3545;">🔍 Ready to Analyze</h4>
+        <h4 style="color: #0f172a;">Ready to Analyze</h4>
     </div>
     """, unsafe_allow_html=True)
     
@@ -908,20 +908,20 @@ if uploaded_file is not None:
 
                 # Display results in styled container
                 st.markdown('<div class="detection-result">', unsafe_allow_html=True)
-                st.markdown('<h4 style="color: #007bff; margin-top: 0;">🎯 Detection Results</h4>', unsafe_allow_html=True)
+                st.markdown('<h4 style="color: #0f172a; margin-top: 0;">Detection Results</h4>', unsafe_allow_html=True)
                 
                 st.image(result_image, caption='', use_column_width=True)
 
                 boxes = results[0].boxes
                 if len(boxes) > 0:
-                    st.markdown('<h5 style="color: #dc3545;">⚠️ Accidents Detected:</h5>', unsafe_allow_html=True)
+                    st.markdown('<h5 style="color: #0f172a;">Accidents Detected:</h5>', unsafe_allow_html=True)
                     for i, box in enumerate(boxes):
                         cls = int(box.cls.item())
                         conf = box.conf.item()
                         class_name = model.names[cls]
                         st.markdown(f"""
-                        <div style="background: #ffe6e6; border-left: 4px solid #dc3545; padding: 10px; margin: 5px 0; border-radius: 5px;">
-                            <strong>🚨 {class_name}</strong> - Confidence: <span style="color: #dc3545; font-weight: bold;">{conf:.2f}</span>
+                        <div style="background: #f8fafc; border-left: 4px solid #e5e7eb; padding: 10px; margin: 5px 0; border-radius: 5px;">
+                            <strong>{class_name}</strong> - Confidence: <span style="color: #0f172a; font-weight: bold;">{conf:.2f}</span>
                         </div>
                         """, unsafe_allow_html=True)
                 else:
@@ -948,7 +948,7 @@ if uploaded_file is not None:
 
     st.markdown("""
     <div style="text-align: center; margin: 30px 0 20px 0;" class="ocr-section">
-        <h4 style="color: #17a2b8;">🔤 License Plate Recognition</h4>
+        <h4 style="color: #0f172a;">License Plate Recognition</h4>
     </div>
     """, unsafe_allow_html=True)
     
@@ -961,30 +961,30 @@ if uploaded_file is not None:
             candidates = detect_license_plate_text(image)
             if candidates:
                 st.markdown('<div class="ocr-result">', unsafe_allow_html=True)
-                st.markdown('<h4 style="color: #17a2b8; margin-top: 0;">📋 License Plate Candidates</h4>', unsafe_allow_html=True)
+                st.markdown('<h4 style="color: #0f172a; margin-top: 0;">License Plate Candidates</h4>', unsafe_allow_html=True)
                 
                 st.write("Found potential license plates:")
                 for i, (text, conf) in enumerate(candidates):
                     if i == 0:
                         st.markdown(f"""
-                        <div style="background: #e8f5e8; border: 2px solid #28a745; border-radius: 8px; padding: 15px; margin: 10px 0;">
-                            <h5 style="color: #28a745; margin-top: 0;">🎯 Top Match: {text}</h5>
-                            <p style="margin-bottom: 0;">Confidence: <strong>{conf:.2f}</strong> 🎯</p>
+                        <div style="background: #ffffff; border: 1px solid #d1d5db; border-radius: 8px; padding: 15px; margin: 10px 0;">
+                            <h5 style="color: #0f172a; margin-top: 0;">Top Match: {text}</h5>
+                            <p style="margin-bottom: 0;">Confidence: <strong>{conf:.2f}</strong></p>
                         </div>
                         """, unsafe_allow_html=True)
                     else:
                         st.markdown(f"""
                         <div style="background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 5px; padding: 10px; margin: 5px 0;">
-                            <strong>🔤 {text}</strong> (confidence: {conf:.2f})
+                            <strong>{text}</strong> (confidence: {conf:.2f})
                         </div>
                         """, unsafe_allow_html=True)
 
                 # Default choose top candidate
                 top_text, top_conf = candidates[0]
-                st.markdown('<h5 style="color: #17a2b8;">📍 Selected License Plate:</h5>', unsafe_allow_html=True)
+                st.markdown('<h5 style="color: #0f172a;">Selected License Plate:</h5>', unsafe_allow_html=True)
                 st.markdown(f"""
-                <div style="background: #fff3cd; border: 2px solid #ffc107; border-radius: 8px; padding: 15px; font-size: 1.2em; font-weight: bold; text-align: center; color: #856404;">
-                    🚗 {top_text} 🚗
+                <div style="background: #ffffff; border: 1px solid #d1d5db; border-radius: 8px; padding: 15px; font-size: 1.2em; font-weight: bold; text-align: center; color: #0f172a;">
+                    {top_text}
                 </div>
                 """, unsafe_allow_html=True)
 
