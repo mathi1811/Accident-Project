@@ -873,6 +873,18 @@ def detect_license_plate_text_with_reader(pil_image, reader):
         return []
 
 
+def resize_image_for_ocr(pil_image, max_side=960):
+    """Resize large images before OCR to keep processing time reasonable."""
+    width, height = pil_image.size
+    longest_side = max(width, height)
+    if longest_side <= max_side:
+        return pil_image
+
+    scale = max_side / float(longest_side)
+    new_size = (max(int(width * scale), 1), max(int(height * scale), 1))
+    return pil_image.resize(new_size)
+
+
 def score_plate_candidate(text):
     """Score how much a candidate looks like a vehicle number plate."""
     cleaned = re.sub(r'[^A-Z0-9]', '', text.upper())
@@ -939,11 +951,7 @@ def extract_plate_focus_crops(rgb_frame, xyxy):
         return []
 
     h, w = crop.shape[:2]
-    crops = [crop]
-
-    lower_half = crop[h // 2 :, :]
-    if lower_half.size:
-        crops.append(lower_half)
+    crops = []
 
     lower_center = crop[max(int(h * 0.55), 0):, max(int(w * 0.15), 0):min(int(w * 0.85), w)]
     if lower_center.size:
@@ -953,7 +961,10 @@ def extract_plate_focus_crops(rgb_frame, xyxy):
     if center_band.size:
         crops.append(center_band)
 
-    return crops
+    if not crops:
+        crops.append(crop)
+
+    return crops[:2]
 
 
 def scan_video_license_plates():
@@ -970,15 +981,24 @@ def scan_video_license_plates():
     for result in detection_results:
         frame_rgb = result.get("original_frame", result["frame"])
         scene_text_candidates = detect_license_plate_text_with_reader(
-            Image.fromarray(frame_rgb),
+            resize_image_for_ocr(Image.fromarray(frame_rgb), max_side=960),
             reader
         )
         crop_candidate_groups = []
 
-        for det in result["detections"]:
+        prioritized_detections = sorted(
+            result["detections"],
+            key=lambda det: det.get("confidence", 0),
+            reverse=True
+        )[:2]
+
+        for det in prioritized_detections:
             for crop in extract_plate_focus_crops(frame_rgb, det.get("xyxy", [])):
                 crop_candidate_groups.append(
-                    detect_license_plate_text_with_reader(Image.fromarray(crop), reader)
+                    detect_license_plate_text_with_reader(
+                        resize_image_for_ocr(Image.fromarray(crop), max_side=640),
+                        reader
+                    )
                 )
 
         merged_candidates = merge_ocr_candidates(scene_text_candidates, *crop_candidate_groups, limit=10)
@@ -990,21 +1010,21 @@ def scan_video_license_plates():
 
         best_plate_candidates = [item for item in plate_candidates if score_plate_candidate(item[0]) > 0][:5]
         selected_candidates = best_plate_candidates or merged_candidates[:5]
-        selected_plate_texts = {text for text, _ in selected_candidates}
-        other_detected_text = [
-            (text, conf) for text, conf in scene_text_candidates
-            if text not in selected_plate_texts
-        ][:5]
+        displayed_scene_text = scene_text_candidates[:5]
 
-        if selected_candidates:
-            top_text, top_conf = selected_candidates[0]
+        if selected_candidates or displayed_scene_text:
+            if selected_candidates:
+                top_text, top_conf = selected_candidates[0]
+            else:
+                top_text, top_conf = ("Not found", 0.0)
+
             plate_results.append({
                 "frame_id": result["frame_id"],
                 "timestamp": result["timestamp"],
                 "plate": top_text,
                 "confidence": top_conf,
                 "all_candidates": selected_candidates,
-                "scene_text_candidates": other_detected_text
+                "scene_text_candidates": displayed_scene_text
             })
 
     st.session_state.video_ocr_results = plate_results
@@ -1354,10 +1374,13 @@ elif uploaded_file is not None and input_type == "Video":
             for result in st.session_state.video_ocr_results:
                 with st.expander(f"Frame {result['frame_id']} - Plate: {result['plate']}"):
                     st.markdown(f"**License Plate:** {result['plate']}")
-                    st.markdown(f"**Confidence:** {result['confidence']:.2f}")
+                    if result['plate'] != "Not found":
+                        st.markdown(f"**Confidence:** {result['confidence']:.2f}")
+                    else:
+                        st.markdown("**Confidence:** Plate not confidently detected")
                     st.markdown(f"**Timestamp:** {result['timestamp']:.2f}s")
 
-                    if len(result['all_candidates']) > 1:
+                    if result.get('all_candidates') and len(result['all_candidates']) > 1:
                         st.markdown("**Other plate-like candidates:**")
                         for text, conf in result['all_candidates'][1:]:
                             st.markdown(f"- {text} ({conf:.2f})")
