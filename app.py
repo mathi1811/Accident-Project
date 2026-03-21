@@ -779,6 +779,8 @@ def detect_license_plate_text(pil_image):
         gray = cv2.medianBlur(gray, 3)
 
         reader = easyocr.Reader(["en"], gpu=False)
+        print(f"EasyOCR reader initialized successfully")
+        
         # Try OCR on both original RGB and preprocessed grayscale
         results_rgb = reader.readtext(img)
         results_gray = reader.readtext(gray)
