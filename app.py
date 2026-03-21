@@ -990,6 +990,11 @@ def scan_video_license_plates():
 
         best_plate_candidates = [item for item in plate_candidates if score_plate_candidate(item[0]) > 0][:5]
         selected_candidates = best_plate_candidates or merged_candidates[:5]
+        selected_plate_texts = {text for text, _ in selected_candidates}
+        other_detected_text = [
+            (text, conf) for text, conf in scene_text_candidates
+            if text not in selected_plate_texts
+        ][:5]
 
         if selected_candidates:
             top_text, top_conf = selected_candidates[0]
@@ -999,7 +1004,7 @@ def scan_video_license_plates():
                 "plate": top_text,
                 "confidence": top_conf,
                 "all_candidates": selected_candidates,
-                "scene_text_candidates": scene_text_candidates[:5]
+                "scene_text_candidates": other_detected_text
             })
 
     st.session_state.video_ocr_results = plate_results
@@ -1358,7 +1363,7 @@ elif uploaded_file is not None and input_type == "Video":
                             st.markdown(f"- {text} ({conf:.2f})")
 
                     if result.get("scene_text_candidates"):
-                        st.markdown("**Other text seen in the frame:**")
+                        st.markdown("**Text detected in Vedio:**")
                         for text, conf in result['scene_text_candidates']:
                             st.markdown(f"- {text} ({conf:.2f})")
 
