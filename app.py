@@ -1027,15 +1027,14 @@ def scan_video_license_plates():
                     )
                 )
 
-        merged_candidates = merge_ocr_candidates(scene_text_candidates, *crop_candidate_groups, limit=10)
+        crop_candidates = merge_ocr_candidates(*crop_candidate_groups, limit=10)
         plate_candidates = sorted(
-            merged_candidates,
+            crop_candidates,
             key=lambda item: (score_plate_candidate(item[0]), item[1]),
             reverse=True
         )
 
-        best_plate_candidates = [item for item in plate_candidates if score_plate_candidate(item[0]) > 0][:5]
-        selected_candidates = best_plate_candidates or merged_candidates[:5]
+        selected_candidates = [item for item in plate_candidates if score_plate_candidate(item[0]) > 0][:5]
         displayed_scene_text = scene_text_candidates[:5]
 
         if selected_candidates or displayed_scene_text:
@@ -1399,7 +1398,7 @@ elif uploaded_file is not None and input_type == "Video":
 
             for result in st.session_state.video_ocr_results:
                 with st.expander(f"Frame {result['frame_id']} - Plate: {result['plate']}"):
-                    st.markdown(f"**License Plate:** {result['plate']}")
+                    st.markdown(f"**NUMBER PLATE:** {result['plate']}")
                     if result['plate'] != "Not found":
                         st.markdown(f"**Confidence:** {result['confidence']:.2f}")
                     else:
@@ -1412,7 +1411,7 @@ elif uploaded_file is not None and input_type == "Video":
                             st.markdown(f"- {text} ({conf:.2f})")
 
                     if result.get("scene_text_candidates"):
-                        st.markdown("**Text detected in Vedio:**")
+                        st.markdown("**TEXTS FOUND IN VEDIO:**")
                         for text, conf in result['scene_text_candidates']:
                             st.markdown(f"- {text} ({conf:.2f})")
 
