@@ -1035,6 +1035,8 @@ def scan_video_license_plates():
         )
 
         selected_candidates = [item for item in plate_candidates if score_plate_candidate(item[0]) > 0][:5]
+        if not selected_candidates and crop_candidates:
+            selected_candidates = crop_candidates[:5]
         displayed_scene_text = scene_text_candidates[:5]
 
         if selected_candidates or displayed_scene_text:
