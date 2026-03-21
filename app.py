@@ -763,12 +763,12 @@ def detect_license_plate_text(pil_image):
     try:
         # Convert PIL image to numpy array (RGB)
         img = np.array(pil_image.convert("RGB"))
-        print(f"OCR Input image shape: {img.shape}, dtype: {img.dtype}")
+        st.write(f"OCR Input image shape: {img.shape}, dtype: {img.dtype}")
 
         # Preprocessing for better OCR
         # Convert to grayscale for OCR
         gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
-        print(f"Grayscale shape: {gray.shape}")
+        st.write(f"Grayscale shape: {gray.shape}")
 
         # Apply some preprocessing to improve OCR
         # Increase contrast
@@ -779,47 +779,47 @@ def detect_license_plate_text(pil_image):
         gray = cv2.medianBlur(gray, 3)
 
         reader = easyocr.Reader(["en"], gpu=False)
-        print(f"EasyOCR reader initialized successfully")
+        st.write(f"EasyOCR reader initialized successfully")
         
         # Try OCR on both original RGB and preprocessed grayscale
         results_rgb = reader.readtext(img)
         results_gray = reader.readtext(gray)
         results = results_rgb + results_gray  # Combine results
-        print(f"EasyOCR found {len(results_rgb)} RGB results and {len(results_gray)} gray results")
+        st.write(f"EasyOCR found {len(results_rgb)} RGB results and {len(results_gray)} gray results")
 
         candidates = []
         for bbox, text, conf in results:
-            print(f"OCR result: '{text}' with confidence {conf}")
+            st.write(f"OCR result: '{text}' with confidence {conf}")
             # Clean the text - remove spaces and special chars, convert to uppercase
             cleaned = re.sub(r'[^A-Za-z0-9]', '', text).upper()
-            print(f"Cleaned text: '{cleaned}'")
+            st.write(f"Cleaned text: '{cleaned}'")
 
             # Very lenient license-plate-like heuristic: 1-15 alnum characters
             # Accept almost anything that looks like it could be a plate
             if re.match(r'^[A-Z0-9]{1,15}$', cleaned) and len(cleaned) >= 1:
                 candidates.append((cleaned, float(conf)))
-                print(f"Added candidate: {cleaned} (conf: {conf})")
+                st.write(f"Added candidate: {cleaned} (conf: {conf})")
             else:
-                print(f"Rejected candidate: {cleaned} (doesn't match pattern)")
+                st.write(f"Rejected candidate: {cleaned} (doesn't match pattern)")
 
         # If no candidates found with strict filtering, try a more lenient approach
         if not candidates:
-            print("No candidates found with strict filtering, trying lenient approach...")
+            st.write("No candidates found with strict filtering, trying lenient approach...")
             for bbox, text, conf in results:
                 cleaned = re.sub(r'[^A-Za-z0-9]', '', text).upper()
                 # Accept any alphanumeric string with at least 1 character
                 if len(cleaned) >= 1 and any(c.isalnum() for c in cleaned):
                     candidates.append((cleaned, float(conf)))
-                    print(f"Added lenient candidate: {cleaned} (conf: {conf})")
+                    st.write(f"Added lenient candidate: {cleaned} (conf: {conf})")
 
         # Sort by confidence desc
         candidates.sort(key=lambda x: x[1], reverse=True)
 
         # Return top candidates (limit to 5)
-        print(f"Returning {len(candidates)} candidates")
+        st.write(f"Returning {len(candidates)} candidates")
         return candidates[:5]
     except Exception as e:
-        print(f"OCR error: {e}")
+        st.error(f"OCR error: {e}")
         return []
 
 
@@ -1122,12 +1122,16 @@ elif uploaded_file is not None and input_type == "Video":
                         st.session_state.video_ocr_results = []
                     
                     if st.button('🔍 Scan License Plates in Detected Frames', key='video_ocr_btn'):
-                        # First, test OCR with a simple test
-                        st.write("🧪 Testing OCR with a simple test image...")
-                        test_img = np.ones((100, 200, 3), dtype=np.uint8) * 255  # White image
+                        # First, test OCR with a simple test image with text
+                        st.write("🧪 Testing OCR with a test image containing text...")
+                        test_img = np.ones((100, 300, 3), dtype=np.uint8) * 255  # White image
+                        # Add some text using OpenCV
+                        cv2.putText(test_img, "ABC123", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2)
                         test_pil = Image.fromarray(test_img)
                         test_candidates = detect_license_plate_text(test_pil)
                         st.write(f"Test OCR result: {len(test_candidates)} candidates found")
+                        if test_candidates:
+                            st.write(f"Test found: {test_candidates}")
                         
                         with st.spinner('🔍 Scanning license plates in accident frames...'):
                             st.session_state.video_ocr_results = []
