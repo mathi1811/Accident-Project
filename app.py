@@ -15,6 +15,8 @@ import cv2
 # Initialize session state
 if 'show_ocr_form' not in st.session_state:
     st.session_state['show_ocr_form'] = False
+if 'video_ocr_results' not in st.session_state:
+    st.session_state.video_ocr_results = []
 
 # Deployment debug tag (to ensure your current container is running latest code)
 st.markdown("""
@@ -1049,16 +1051,132 @@ elif uploaded_file is not None and input_type == "Video":
                 if detection_results:
                     st.success(f"Found {len(detection_results)} frames with accidents")
                     
+                    # Show all detected frames in a grid
+                    st.markdown("### 📸 Accident Frames")
+                    cols = st.columns(min(3, len(detection_results)))
+                    
                     for i, result in enumerate(detection_results):
-                        with st.expander(f"Frame {result['frame_id']} @ {result['timestamp']:.2f}s (Result {i+1})"):
-                            try:
-                                st.image(result["frame"], caption=f"Frame {result['frame_id']}", use_column_width=True)
-                                st.write(f"Frame shape: {result['frame'].shape}")
-                                for det in result["detections"]:
-                                    st.markdown(f"**{det['class']}** - Confidence: {det['confidence']:.2f}")
-                            except Exception as img_error:
-                                st.error(f"Error displaying frame {result['frame_id']}: {str(img_error)}")
-                                st.write(f"Detections found: {len(result['detections'])}")
+                        col_idx = i % 3
+                        with cols[col_idx]:
+                            st.image(result["frame"], caption=f"Frame {result['frame_id']}", use_column_width=True)
+                            st.markdown(f"**Time:** {result['timestamp']:.2f}s")
+                            for det in result["detections"]:
+                                st.markdown(f"**{det['class']}** - {det['confidence']:.2f}")
+                    
+                    # OCR and SMS section for video frames
+                    st.markdown("---")
+                    st.markdown("### 🔤 License Plate Recognition & Emergency Alerts")
+                    
+                    # Initialize video OCR state
+                    if 'video_ocr_results' not in st.session_state:
+                        st.session_state.video_ocr_results = []
+                    
+                    if st.button('🔍 Scan License Plates in Detected Frames', key='video_ocr_btn'):
+                        with st.spinner('🔍 Scanning license plates in accident frames...'):
+                            st.session_state.video_ocr_results = []
+                            
+                            progress_ocr = st.progress(0)
+                            total_frames = len(detection_results)
+                            
+                            for i, result in enumerate(detection_results):
+                                # Convert numpy array back to PIL Image for OCR
+                                frame_rgb = result["frame"]
+                                pil_image = Image.fromarray(frame_rgb)
+                                
+                                # Debug: show we're processing this frame
+                                st.write(f"Processing frame {result['frame_id']}...")
+                                
+                                # Run OCR on this frame
+                                candidates = detect_license_plate_text(pil_image)
+                                
+                                st.write(f"Frame {result['frame_id']}: Found {len(candidates)} OCR candidates")
+                                
+                                if candidates:
+                                    top_text, top_conf = candidates[0]
+                                    st.session_state.video_ocr_results.append({
+                                        "frame_id": result["frame_id"],
+                                        "timestamp": result["timestamp"],
+                                        "plate": top_text,
+                                        "confidence": top_conf,
+                                        "all_candidates": candidates
+                                    })
+                                    st.write(f"✓ Added plate: {top_text} (conf: {top_conf:.2f})")
+                                else:
+                                    st.write(f"✗ No license plates found in frame {result['frame_id']}")
+                                
+                                progress_ocr.progress((i + 1) / total_frames)
+                            
+                            st.success(f"OCR scan complete! Found license plates in {len(st.session_state.video_ocr_results)} out of {total_frames} frames.")
+                    
+                    # Display OCR results and SMS options
+                    if st.session_state.video_ocr_results:
+                        st.markdown("#### 📋 Detected License Plates")
+                        
+                        for result in st.session_state.video_ocr_results:
+                            with st.expander(f"Frame {result['frame_id']} - Plate: {result['plate']}"):
+                                st.markdown(f"**License Plate:** {result['plate']}")
+                                st.markdown(f"**Confidence:** {result['confidence']:.2f}")
+                                st.markdown(f"**Timestamp:** {result['timestamp']:.2f}s")
+                                
+                                # Show all candidates
+                                if len(result['all_candidates']) > 1:
+                                    st.markdown("**Other candidates:**")
+                                    for text, conf in result['all_candidates'][1:]:
+                                        st.markdown(f"- {text} ({conf:.2f})")
+                        
+                        # SMS notification section
+                        st.markdown("---")
+                        st.markdown("#### 📱 Emergency SMS Notifications")
+                        
+                        # Check for Twilio credentials
+                        tw_sid_env = os.environ.get("TWILIO_ACCOUNT_SID")
+                        tw_token_env = os.environ.get("TWILIO_AUTH_TOKEN")
+                        tw_from_env = os.environ.get("TWILIO_FROM_NUMBER")
+                        tw_to_env = os.environ.get("TWILIO_TO_NUMBER")
+                        
+                        sid = tw_sid_env
+                        token = tw_token_env
+                        frm = tw_from_env
+                        to = tw_to_env
+                        
+                        if sid and token and frm and to:
+                            st.markdown("✅ **Twilio credentials found** - Ready to send emergency alerts!")
+                            
+                            # Location input
+                            location = st.text_input('📍 Accident Location (optional)', 
+                                                   placeholder='Enter location for emergency report',
+                                                   key='video_location')
+                            
+                            if st.button('🚨 Send Emergency Alerts for All Detections', key='video_sms_btn'):
+                                with st.spinner('📤 Sending emergency alerts...'):
+                                    sent_count = 0
+                                    failed_count = 0
+                                    
+                                    for result in st.session_state.video_ocr_results:
+                                        payload = prepare_report_payload(
+                                            result['plate'], 
+                                            result['confidence'], 
+                                            extra={"location": location, "video_frame": True, "timestamp": result['timestamp']}
+                                        )
+                                        
+                                        try:
+                                            sms_result = send_report(payload)
+                                            if 'status' in sms_result and sms_result['status'] == 'sent':
+                                                sent_count += 1
+                                            else:
+                                                failed_count += 1
+                                        except Exception as e:
+                                            st.error(f"Failed to send alert for plate {result['plate']}: {e}")
+                                            failed_count += 1
+                                    
+                                    if sent_count > 0:
+                                        st.success(f"✅ Sent {sent_count} emergency alerts successfully!")
+                                    if failed_count > 0:
+                                        st.error(f"❌ Failed to send {failed_count} alerts")
+                        else:
+                            st.warning("⚠️ Twilio credentials not configured. Emergency SMS alerts are not available.")
+                            st.info("Configure TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_FROM_NUMBER, and TWILIO_TO_NUMBER environment variables.")
+                    
                 else:
                     st.info("No accidents detected in the video frames processed.")
                 
