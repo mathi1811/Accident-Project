@@ -10,6 +10,7 @@ import requests
 import numpy as np
 import csv
 from datetime import datetime
+import cv2
 
 # Deployment debug tag (to ensure your current container is running latest code)
 st.markdown("""
@@ -714,6 +715,9 @@ def log_report(payload, result):
 st.markdown('<h1 class="title">Accident Detection & License Plate OCR</h1>', unsafe_allow_html=True)
 st.markdown('<p class="subtitle">Advanced AI-powered accident detection with automatic license plate recognition and emergency reporting</p>', unsafe_allow_html=True)
 
+# Add input type selection
+input_type = st.radio("Select Input Type", ["Image", "Video"], horizontal=True)
+
 # Create two columns for the main content
 col1, col2 = st.columns([2, 1])
 
@@ -722,7 +726,7 @@ with col1:
     <div class="how-it-works-card">
         <h3 style="color: #0f172a; margin-top: 0;">How it works:</h3>
         <ol>
-            <li><strong>📤 Upload</strong> an image containing a vehicle</li>
+            <li><strong>📤 Upload</strong> an image or video containing a vehicle</li>
             <li><strong>🤖 Detect</strong> accidents using AI vision models</li>
             <li><strong>🔤 Extract</strong> license plate information via OCR</li>
             <li><strong>📱 Report</strong> incidents automatically via SMS</li>
@@ -739,6 +743,7 @@ with col2:
             <li>🔤 License plate OCR</li>
             <li>📱 Emergency SMS alerts</li>
             <li>📊 Confidence scoring</li>
+            <li>🎥 Video frame processing</li>
         </ul>
     </div>
     """, unsafe_allow_html=True)
@@ -865,17 +870,27 @@ Emergency services have been notified."""
     return {"payload": payload}
 
 
-st.markdown("""
-<div class="card detection-section">
-    <h3 style="color: #0f172a; margin-top: 0;">Upload Image for Analysis</h3>
-    <p style="color: #1f2937;">Supported formats: JPG, JPEG, PNG, AVIF</p>
-</div>
-""", unsafe_allow_html=True)
+# Conditional uploader based on input type
+if input_type == "Image":
+    st.markdown("""
+    <div class="card detection-section">
+        <h3 style="color: #0f172a; margin-top: 0;">Upload Image for Analysis</h3>
+        <p style="color: #1f2937;">Supported formats: JPG, JPEG, PNG, AVIF</p>
+    </div>
+    """, unsafe_allow_html=True)
+    uploaded_file = st.file_uploader("", type=["jpg", "jpeg", "png", "avif"], 
+                                   help="Choose an image file to analyze for accidents and license plates 🚗")
+else:
+    st.markdown("""
+    <div class="card detection-section">
+        <h3 style="color: #0f172a; margin-top: 0;">Upload Video for Analysis</h3>
+        <p style="color: #1f2937;">Supported formats: MP4, AVI, MOV, MKV</p>
+    </div>
+    """, unsafe_allow_html=True)
+    uploaded_file = st.file_uploader("", type=["mp4", "avi", "mov", "mkv"],
+                                   help="Choose a video file (CCTV or camera feed) to analyze for accidents 🎥")
 
-uploaded_file = st.file_uploader("", type=["jpg", "jpeg", "png", "avif"], 
-                               help="Choose an image file to analyze for accidents and license plates 🚗")
-
-if uploaded_file is not None:
+if uploaded_file is not None and input_type == "Image":
     # Display the uploaded image in a styled container
     st.markdown('<div class="card">', unsafe_allow_html=True)
     st.markdown('<h4 style="color: #0f172a; margin-top: 0;">Uploaded Image Preview</h4>', unsafe_allow_html=True)
@@ -942,10 +957,106 @@ if uploaded_file is not None:
                 </div>
                 """, unsafe_allow_html=True)
 
+elif uploaded_file is not None and input_type == "Video":
+    st.markdown('<div class="card">', unsafe_allow_html=True)
+    st.markdown('<h4 style="color: #0f172a; margin-top: 0;">Video Frame Analysis</h4>', unsafe_allow_html=True)
+    
+    # Video settings
+    col1, col2 = st.columns(2)
+    with col1:
+        frame_interval = st.slider("Extract every N frames", 1, 30, 5, help="Higher value = fewer frames processed")
+    with col2:
+        max_frames = st.slider("Maximum frames to process", 10, 500, 100, help="Limit processing for performance")
+    
+    if st.button("Process Video Frames", key="process_video_btn"):
+        with st.spinner("Extracting and analyzing video frames..."):
+            try:
+                # Save video temporarily
+                with tempfile.NamedTemporaryFile(delete=False, suffix=".mp4") as tmp_video:
+                    tmp_video.write(uploaded_file.read())
+                    video_path = tmp_video.name
+                
+                # Open video
+                cap = cv2.VideoCapture(video_path)
+                total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+                fps = cap.get(cv2.CAP_PROP_FPS)
+                duration = total_frames / fps if fps > 0 else 0
+                
+                st.info(f"Video: {total_frames} frames @ {fps:.1f} FPS (~{duration:.1f}s)")
+                
+                # Load model once
+                MODEL_PATH = "runs/accident_detector2/weights/best.pt"
+                model = YOLO(MODEL_PATH)
+                
+                frame_count = 0
+                detection_results = []
+                progress_bar = st.progress(0)
+                
+                # Process frames
+                while cap.isOpened() and frame_count < max_frames:
+                    ret, frame = cap.read()
+                    if not ret:
+                        break
+                    
+                    current_frame = int(cap.get(cv2.CAP_PROP_POS_FRAMES))
+                    
+                    # Process every Nth frame
+                    if current_frame % frame_interval == 0:
+                        # Run detection
+                        results = model(frame, save=False, conf=0.5)
+                        boxes = results[0].boxes
+                        
+                        if len(boxes) > 0:
+                            # Found accidents
+                            result_frame = results[0].plot()
+                            timestamp = current_frame / fps if fps > 0 else 0
+                            
+                            detection_results.append({
+                                "frame_id": current_frame,
+                                "timestamp": timestamp,
+                                "frame": result_frame,
+                                "detections": []
+                            })
+                            
+                            for box in boxes:
+                                cls = int(box.cls.item())
+                                conf = box.conf.item()
+                                class_name = model.names[cls]
+                                detection_results[-1]["detections"].append({
+                                    "class": class_name,
+                                    "confidence": conf
+                                })
+                        
+                        frame_count += 1
+                        progress = min(frame_count / max_frames, 1.0)
+                        progress_bar.progress(progress)
+                
+                cap.release()
+                os.unlink(video_path)
+                
+                # Display results
+                if detection_results:
+                    st.success(f"Found {len(detection_results)} frames with accidents")
+                    
+                    for result in detection_results:
+                        with st.expander(f"Frame {result['frame_id']} @ {result['timestamp']:.2f}s"):
+                            st.image(result["frame"], use_column_width=True)
+                            for det in result["detections"]:
+                                st.markdown(f"**{det['class']}** - Confidence: {det['confidence']:.2f}")
+                else:
+                    st.info("No accidents detected in the video frames processed.")
+                
+                st.markdown('</div>', unsafe_allow_html=True)
+            
+            except Exception as e:
+                st.error(f"Video processing error: {str(e)}")
+                st.markdown('</div>', unsafe_allow_html=True)
+
     # OCR / Reporting UI - Use session state to persist form visibility
     if 'show_ocr_form' not in st.session_state:
         st.session_state.show_ocr_form = False
 
+if input_type == "Image":
     st.markdown("""
     <div style="text-align: center; margin: 30px 0 20px 0;" class="ocr-section">
         <h4 style="color: #0f172a;">License Plate Recognition</h4>
