@@ -1051,7 +1051,7 @@ Emergency services have been notified."""
 
 
 # Conditional uploader based on input type
-if input_type == "Image" and uploaded_file is not None:
+if input_type == "Image":
     st.markdown("""
     <div class="card detection-section">
         <h3 style="color: #0f172a; margin-top: 0;">Upload Image for Analysis</h3>
@@ -1374,7 +1374,7 @@ elif uploaded_file is not None and input_type == "Video":
     # OCR / Reporting UI - Use session state to persist form visibility
     # (show_ocr_form is now initialized at the top of the app)
 
-if input_type == "Image":
+if input_type == "Image" and uploaded_file is not None:
     st.markdown("""
     <div style="text-align: center; margin: 30px 0 20px 0;" class="ocr-section">
         <h4 style="color: #0f172a;">License Plate Recognition</h4>
