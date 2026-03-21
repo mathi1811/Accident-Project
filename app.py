@@ -873,6 +873,32 @@ def detect_license_plate_text_with_reader(pil_image, reader):
         return []
 
 
+def detect_general_text_with_reader(pil_image, reader, limit=5):
+    """Run OCR for general scene text without plate-specific filtering."""
+    try:
+        img = np.array(pil_image.convert("RGB"))
+        gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
+        clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
+        gray = clahe.apply(gray)
+
+        results = reader.readtext(img) + reader.readtext(gray)
+        merged = {}
+
+        for bbox, text, conf in results:
+            cleaned = re.sub(r'\s+', ' ', str(text)).strip()
+            if len(cleaned) < 2:
+                continue
+            previous = merged.get(cleaned)
+            if previous is None or float(conf) > previous:
+                merged[cleaned] = float(conf)
+
+        ranked = sorted(merged.items(), key=lambda item: item[1], reverse=True)
+        return ranked[:limit]
+    except Exception as e:
+        st.error(f"OCR error: {e}")
+        return []
+
+
 def resize_image_for_ocr(pil_image, max_side=960):
     """Resize large images before OCR to keep processing time reasonable."""
     width, height = pil_image.size
@@ -980,7 +1006,7 @@ def scan_video_license_plates():
 
     for result in detection_results:
         frame_rgb = result.get("original_frame", result["frame"])
-        scene_text_candidates = detect_license_plate_text_with_reader(
+        scene_text_candidates = detect_general_text_with_reader(
             resize_image_for_ocr(Image.fromarray(frame_rgb), max_side=960),
             reader
         )
