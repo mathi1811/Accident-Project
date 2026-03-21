@@ -12,6 +12,10 @@ import csv
 from datetime import datetime
 import cv2
 
+# Initialize session state
+if 'show_ocr_form' not in st.session_state:
+    st.session_state['show_ocr_form'] = False
+
 # Deployment debug tag (to ensure your current container is running latest code)
 st.markdown("""
 <div style='font-size:0.85rem; padding: 8px 12px; border-left: 4px solid #28a745; background: rgba(40, 167, 69, 0.1); margin-bottom:10px; color:#155724;'>
@@ -993,6 +997,7 @@ elif uploaded_file is not None and input_type == "Video":
                 progress_bar = st.progress(0)
                 
                 # Process frames
+                processed_frames = 0
                 while cap.isOpened() and frame_count < max_frames:
                     ret, frame = cap.read()
                     if not ret:
@@ -1002,6 +1007,7 @@ elif uploaded_file is not None and input_type == "Video":
                     
                     # Process every Nth frame
                     if current_frame % frame_interval == 0:
+                        processed_frames += 1
                         # Run detection
                         results = model(frame, save=False, conf=0.5)
                         boxes = results[0].boxes
@@ -1009,12 +1015,14 @@ elif uploaded_file is not None and input_type == "Video":
                         if len(boxes) > 0:
                             # Found accidents
                             result_frame = results[0].plot()
+                            # Convert BGR to RGB for Streamlit and make a copy
+                            result_frame_rgb = cv2.cvtColor(result_frame.copy(), cv2.COLOR_BGR2RGB)
                             timestamp = current_frame / fps if fps > 0 else 0
                             
                             detection_results.append({
                                 "frame_id": current_frame,
                                 "timestamp": timestamp,
-                                "frame": result_frame,
+                                "frame": result_frame_rgb,
                                 "detections": []
                             })
                             
@@ -1034,15 +1042,23 @@ elif uploaded_file is not None and input_type == "Video":
                 cap.release()
                 os.unlink(video_path)
                 
+                # Show processing summary
+                st.info(f"Processed {processed_frames} frames out of {total_frames} total frames")
+                
                 # Display results
                 if detection_results:
                     st.success(f"Found {len(detection_results)} frames with accidents")
                     
-                    for result in detection_results:
-                        with st.expander(f"Frame {result['frame_id']} @ {result['timestamp']:.2f}s"):
-                            st.image(result["frame"], use_column_width=True)
-                            for det in result["detections"]:
-                                st.markdown(f"**{det['class']}** - Confidence: {det['confidence']:.2f}")
+                    for i, result in enumerate(detection_results):
+                        with st.expander(f"Frame {result['frame_id']} @ {result['timestamp']:.2f}s (Result {i+1})"):
+                            try:
+                                st.image(result["frame"], caption=f"Frame {result['frame_id']}", use_column_width=True)
+                                st.write(f"Frame shape: {result['frame'].shape}")
+                                for det in result["detections"]:
+                                    st.markdown(f"**{det['class']}** - Confidence: {det['confidence']:.2f}")
+                            except Exception as img_error:
+                                st.error(f"Error displaying frame {result['frame_id']}: {str(img_error)}")
+                                st.write(f"Detections found: {len(result['detections'])}")
                 else:
                     st.info("No accidents detected in the video frames processed.")
                 
@@ -1053,8 +1069,7 @@ elif uploaded_file is not None and input_type == "Video":
                 st.markdown('</div>', unsafe_allow_html=True)
 
     # OCR / Reporting UI - Use session state to persist form visibility
-    if 'show_ocr_form' not in st.session_state:
-        st.session_state.show_ocr_form = False
+    # (show_ocr_form is now initialized at the top of the app)
 
 if input_type == "Image":
     st.markdown("""
@@ -1065,9 +1080,9 @@ if input_type == "Image":
     
     if st.button('📝 Read License Plate & Prepare Report', key='ocr_btn', 
                 help='Extract license plate text and prepare emergency report 📋'):
-        st.session_state.show_ocr_form = True
+        st.session_state['show_ocr_form'] = True
 
-    if st.session_state.show_ocr_form:
+    if st.session_state.get('show_ocr_form', False):
         with st.spinner('🔍 Scanning for license plates...'):
             candidates = detect_license_plate_text(image)
             if candidates:
@@ -1255,7 +1270,7 @@ if input_type == "Image":
                     st.markdown('<br>', unsafe_allow_html=True)
                     if st.button('❌ Close Report Form', key='close_ocr_form',
                                help='Close the license plate and reporting section 🔒'):
-                        st.session_state.show_ocr_form = False
+                        st.session_state['show_ocr_form'] = False
                         st.rerun()
             else:
                 st.markdown("""
