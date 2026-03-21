@@ -940,6 +940,18 @@ def score_plate_candidate(text):
     return score
 
 
+def is_viable_plate_candidate(text):
+    """Return True only for candidates that plausibly resemble a plate."""
+    cleaned = re.sub(r'[^A-Z0-9]', '', text.upper())
+    if len(cleaned) < 6:
+        return False
+    if not any(ch.isalpha() for ch in cleaned):
+        return False
+    if not any(ch.isdigit() for ch in cleaned):
+        return False
+    return score_plate_candidate(cleaned) > 0
+
+
 def merge_ocr_candidates(*candidate_groups, limit=5):
     """Merge OCR candidates and keep the best confidence per unique text."""
     merged = {}
@@ -1069,9 +1081,7 @@ def scan_video_license_plates():
             reverse=True
         )
 
-        selected_candidates = [item for item in plate_candidates if score_plate_candidate(item[0]) > 0][:5]
-        if not selected_candidates and crop_candidates:
-            selected_candidates = crop_candidates[:5]
+        selected_candidates = [item for item in plate_candidates if is_viable_plate_candidate(item[0])][:5]
         displayed_scene_text = scene_text_candidates[:5]
 
         if selected_candidates or displayed_scene_text:
