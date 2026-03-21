@@ -1444,7 +1444,9 @@ elif uploaded_file is not None and input_type == "Video":
             st.markdown("#### 📋 Detected License Plates")
 
             for result in st.session_state.video_ocr_results:
+                text_preview = ", ".join(text for text, _ in result.get("scene_text_candidates", [])[:2]) or "No extra text"
                 with st.expander(f"Frame {result['frame_id']} - Plate: {result['plate']}"):
+                    st.markdown(f"**TEXTS FOUND IN VEDIO (Preview):** {text_preview}")
                     st.markdown(f"**NUMBER PLATE:** {result['plate']}")
                     if result['plate'] != "Not found":
                         st.markdown(f"**Confidence:** {result['confidence']:.2f}")
