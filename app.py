@@ -763,19 +763,37 @@ def detect_license_plate_text(pil_image):
     try:
         # Convert PIL image to numpy array (RGB)
         img = np.array(pil_image.convert("RGB"))
+
+        # Preprocessing for better OCR
+        # Convert to grayscale for OCR
+        gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
+
+        # Apply some preprocessing to improve OCR
+        # Increase contrast
+        clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
+        gray = clahe.apply(gray)
+
+        # Denoise
+        gray = cv2.medianBlur(gray, 3)
+
         reader = easyocr.Reader(["en"], gpu=False)
-        results = reader.readtext(img)
+        results = reader.readtext(gray)
 
         candidates = []
         for bbox, text, conf in results:
+            # Clean the text - remove spaces and special chars, convert to uppercase
             cleaned = re.sub(r'[^A-Za-z0-9]', '', text).upper()
-            # License-plate-like heuristic: 4-10 alnum characters
-            if re.match(r'^[A-Z0-9]{4,10}$', cleaned):
+
+            # More lenient license-plate-like heuristic: 2-12 alnum characters
+            # Allow shorter plates and be less restrictive
+            if re.match(r'^[A-Z0-9]{2,12}$', cleaned) and len(cleaned) >= 2:
                 candidates.append((cleaned, float(conf)))
 
         # Sort by confidence desc
         candidates.sort(key=lambda x: x[1], reverse=True)
-        return candidates
+
+        # Return top candidates (limit to 5)
+        return candidates[:5]
     except Exception as e:
         st.error(f"OCR error: {e}")
         return []
@@ -1051,17 +1069,25 @@ elif uploaded_file is not None and input_type == "Video":
                 if detection_results:
                     st.success(f"Found {len(detection_results)} frames with accidents")
                     
-                    # Show all detected frames in a grid
+                    # Show all detected frames
                     st.markdown("### 📸 Accident Frames")
-                    cols = st.columns(min(3, len(detection_results)))
                     
                     for i, result in enumerate(detection_results):
-                        col_idx = i % 3
-                        with cols[col_idx]:
-                            st.image(result["frame"], caption=f"Frame {result['frame_id']}", use_column_width=True)
-                            st.markdown(f"**Time:** {result['timestamp']:.2f}s")
-                            for det in result["detections"]:
-                                st.markdown(f"**{det['class']}** - {det['confidence']:.2f}")
+                        with st.expander(f"🚨 Accident Frame {i+1} - Frame {result['frame_id']} @ {result['timestamp']:.2f}s"):
+                            col1, col2 = st.columns([1, 1])
+                            
+                            with col1:
+                                st.image(result["frame"], caption=f"Frame {result['frame_id']}", use_column_width=True)
+                            
+                            with col2:
+                                st.markdown("**Detection Details:**")
+                                for det in result["detections"]:
+                                    st.markdown(f"• **{det['class']}** - Confidence: {det['confidence']:.2f}")
+                                
+                                st.markdown(f"**Frame Info:**")
+                                st.markdown(f"• Frame ID: {result['frame_id']}")
+                                st.markdown(f"• Timestamp: {result['timestamp']:.2f}s")
+                                st.markdown(f"• Image shape: {result['frame'].shape}")
                     
                     # OCR and SMS section for video frames
                     st.markdown("---")
@@ -1152,25 +1178,36 @@ elif uploaded_file is not None and input_type == "Video":
                                     sent_count = 0
                                     failed_count = 0
                                     
+                                    st.write(f"Attempting to send {len(st.session_state.video_ocr_results)} SMS alerts...")
+                                    
                                     for result in st.session_state.video_ocr_results:
+                                        st.write(f"Sending alert for plate: {result['plate']}")
+                                        
                                         payload = prepare_report_payload(
                                             result['plate'], 
                                             result['confidence'], 
                                             extra={"location": location, "video_frame": True, "timestamp": result['timestamp']}
                                         )
                                         
+                                        st.write(f"Payload: {payload}")
+                                        
                                         try:
                                             sms_result = send_report(payload)
+                                            st.write(f"SMS result: {sms_result}")
+                                            
                                             if 'status' in sms_result and sms_result['status'] == 'sent':
                                                 sent_count += 1
+                                                st.success(f"✅ SMS sent for plate {result['plate']}")
                                             else:
                                                 failed_count += 1
+                                                st.error(f"❌ SMS failed for plate {result['plate']}: {sms_result}")
                                         except Exception as e:
-                                            st.error(f"Failed to send alert for plate {result['plate']}: {e}")
+                                            st.error(f"Exception sending alert for plate {result['plate']}: {e}")
                                             failed_count += 1
                                     
+                                    st.markdown("---")
                                     if sent_count > 0:
-                                        st.success(f"✅ Sent {sent_count} emergency alerts successfully!")
+                                        st.success(f"✅ Successfully sent {sent_count} emergency alerts!")
                                     if failed_count > 0:
                                         st.error(f"❌ Failed to send {failed_count} alerts")
                         else:
