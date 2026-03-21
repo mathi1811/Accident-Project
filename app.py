@@ -873,6 +873,28 @@ def detect_license_plate_text_with_reader(pil_image, reader):
         return []
 
 
+def score_plate_candidate(text):
+    """Score how much a candidate looks like a vehicle number plate."""
+    cleaned = re.sub(r'[^A-Z0-9]', '', text.upper())
+    if not cleaned:
+        return -1
+
+    score = 0
+    if 6 <= len(cleaned) <= 10:
+        score += 4
+    if any(ch.isalpha() for ch in cleaned) and any(ch.isdigit() for ch in cleaned):
+        score += 4
+    if re.match(r'^[A-Z]{2}\d{1,2}[A-Z]{0,3}\d{3,4}$', cleaned):
+        score += 8
+    if re.match(r'^[A-Z]{2}\d{2}[A-Z]{1,3}\d{4}$', cleaned):
+        score += 10
+    if cleaned[:2].isalpha():
+        score += 1
+    if cleaned[-4:].isdigit():
+        score += 2
+    return score
+
+
 def merge_ocr_candidates(*candidate_groups, limit=5):
     """Merge OCR candidates and keep the best confidence per unique text."""
     merged = {}
@@ -910,6 +932,30 @@ def extract_box_crop(rgb_frame, xyxy, padding_ratio=0.2):
     return rgb_frame[y1:y2, x1:x2]
 
 
+def extract_plate_focus_crops(rgb_frame, xyxy):
+    """Return crops that emphasize where a plate is likely to appear inside a vehicle box."""
+    crop = extract_box_crop(rgb_frame, xyxy, padding_ratio=0.15)
+    if crop is None or crop.size == 0:
+        return []
+
+    h, w = crop.shape[:2]
+    crops = [crop]
+
+    lower_half = crop[h // 2 :, :]
+    if lower_half.size:
+        crops.append(lower_half)
+
+    lower_center = crop[max(int(h * 0.55), 0):, max(int(w * 0.15), 0):min(int(w * 0.85), w)]
+    if lower_center.size:
+        crops.append(lower_center)
+
+    center_band = crop[max(int(h * 0.45), 0):min(int(h * 0.8), h), max(int(w * 0.2), 0):min(int(w * 0.8), w)]
+    if center_band.size:
+        crops.append(center_band)
+
+    return crops
+
+
 def scan_video_license_plates():
     """Scan stored video detection frames for license-plate text."""
     detection_results = st.session_state.get("video_detection_results", [])
@@ -923,29 +969,37 @@ def scan_video_license_plates():
 
     for result in detection_results:
         frame_rgb = result.get("original_frame", result["frame"])
-        full_frame_candidates = detect_license_plate_text_with_reader(
+        scene_text_candidates = detect_license_plate_text_with_reader(
             Image.fromarray(frame_rgb),
             reader
         )
         crop_candidate_groups = []
 
         for det in result["detections"]:
-            crop = extract_box_crop(frame_rgb, det.get("xyxy", []))
-            if crop is None or crop.size == 0:
-                continue
-            crop_candidate_groups.append(
-                detect_license_plate_text_with_reader(Image.fromarray(crop), reader)
-            )
+            for crop in extract_plate_focus_crops(frame_rgb, det.get("xyxy", [])):
+                crop_candidate_groups.append(
+                    detect_license_plate_text_with_reader(Image.fromarray(crop), reader)
+                )
 
-        candidates = merge_ocr_candidates(full_frame_candidates, *crop_candidate_groups)
-        if candidates:
-            top_text, top_conf = candidates[0]
+        merged_candidates = merge_ocr_candidates(scene_text_candidates, *crop_candidate_groups, limit=10)
+        plate_candidates = sorted(
+            merged_candidates,
+            key=lambda item: (score_plate_candidate(item[0]), item[1]),
+            reverse=True
+        )
+
+        best_plate_candidates = [item for item in plate_candidates if score_plate_candidate(item[0]) > 0][:5]
+        selected_candidates = best_plate_candidates or merged_candidates[:5]
+
+        if selected_candidates:
+            top_text, top_conf = selected_candidates[0]
             plate_results.append({
                 "frame_id": result["frame_id"],
                 "timestamp": result["timestamp"],
                 "plate": top_text,
                 "confidence": top_conf,
-                "all_candidates": candidates
+                "all_candidates": selected_candidates,
+                "scene_text_candidates": scene_text_candidates[:5]
             })
 
     st.session_state.video_ocr_results = plate_results
@@ -1299,8 +1353,13 @@ elif uploaded_file is not None and input_type == "Video":
                     st.markdown(f"**Timestamp:** {result['timestamp']:.2f}s")
 
                     if len(result['all_candidates']) > 1:
-                        st.markdown("**Other candidates:**")
+                        st.markdown("**Other plate-like candidates:**")
                         for text, conf in result['all_candidates'][1:]:
+                            st.markdown(f"- {text} ({conf:.2f})")
+
+                    if result.get("scene_text_candidates"):
+                        st.markdown("**Other text seen in the frame:**")
+                        for text, conf in result['scene_text_candidates']:
                             st.markdown(f"- {text} ({conf:.2f})")
 
             st.markdown("---")
@@ -1311,10 +1370,15 @@ elif uploaded_file is not None and input_type == "Video":
             tw_from_env = os.environ.get("TWILIO_FROM_NUMBER")
             tw_to_env = os.environ.get("TWILIO_TO_NUMBER")
 
-            sid = tw_sid_env
-            token = tw_token_env
-            frm = tw_from_env
-            to = tw_to_env
+            tw_sid_ui = st.session_state.get('tw_sid') if 'tw_sid' in st.session_state else None
+            tw_token_ui = st.session_state.get('tw_token') if 'tw_token' in st.session_state else None
+            tw_from_ui = st.session_state.get('tw_from') if 'tw_from' in st.session_state else None
+            tw_to_ui = st.session_state.get('tw_to') if 'tw_to' in st.session_state else None
+
+            sid = tw_sid_ui or tw_sid_env
+            token = tw_token_ui or tw_token_env
+            frm = tw_from_ui or tw_from_env
+            to = tw_to_ui or tw_to_env
 
             if sid and token and frm and to:
                 st.markdown("✅ **Twilio credentials found** - Ready to send emergency alerts!")
@@ -1363,8 +1427,78 @@ elif uploaded_file is not None and input_type == "Video":
                         if failed_count > 0:
                             st.error(f"❌ Failed to send {failed_count} alerts")
             else:
-                st.warning("⚠️ Twilio credentials not configured. Emergency SMS alerts are not available.")
-                st.info("Configure TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_FROM_NUMBER, and TWILIO_TO_NUMBER environment variables.")
+                st.warning("⚠️ Twilio credentials not configured yet.")
+                st.info("Enter your Twilio Account SID, Auth Token, From Number, and Emergency Number below to enable SMS and call alerts.")
+
+                col1, col2 = st.columns(2)
+                with col1:
+                    tw_sid = st.text_input(
+                        '🔐 Twilio Account SID',
+                        type='password',
+                        value=tw_sid_env or '',
+                        placeholder='Enter your Twilio SID',
+                        key='video_tw_sid'
+                    )
+                    tw_from = st.text_input(
+                        '📞 Twilio From Number',
+                        value=tw_from_env or '',
+                        placeholder='+15551234567',
+                        key='video_tw_from'
+                    )
+                with col2:
+                    tw_token = st.text_input(
+                        '🔑 Twilio Auth Token',
+                        type='password',
+                        value=tw_token_env or '',
+                        placeholder='Enter your Twilio token',
+                        key='video_tw_token'
+                    )
+                    tw_to = st.text_input(
+                        '📱 Emergency Number',
+                        value=tw_to_env or '',
+                        placeholder='+15559876543',
+                        key='video_tw_to'
+                    )
+
+                location = st.text_input(
+                    '📍 Accident Location (optional)',
+                    placeholder='Enter location for emergency report',
+                    key='video_location_manual'
+                )
+
+                if st.button('🚀 Save Twilio Details & Send Alerts', key='video_save_sms_btn'):
+                    st.session_state['tw_sid'] = tw_sid
+                    st.session_state['tw_token'] = tw_token
+                    st.session_state['tw_from'] = tw_from
+                    st.session_state['tw_to'] = tw_to
+
+                    with st.spinner('📤 Sending emergency alerts...'):
+                        sent_count = 0
+                        failed_count = 0
+
+                        for result in st.session_state.video_ocr_results:
+                            payload = prepare_report_payload(
+                                result['plate'],
+                                result['confidence'],
+                                extra={"location": location, "video_frame": True, "timestamp": result['timestamp']}
+                            )
+
+                            try:
+                                sms_result = send_report(payload)
+                                if 'status' in sms_result and sms_result['status'] == 'sent':
+                                    sent_count += 1
+                                    st.success(f"✅ Alert sent for plate {result['plate']}")
+                                else:
+                                    failed_count += 1
+                                    st.error(f"❌ Alert failed for plate {result['plate']}: {sms_result}")
+                            except Exception as e:
+                                failed_count += 1
+                                st.error(f"Exception sending alert for plate {result['plate']}: {e}")
+
+                        if sent_count > 0:
+                            st.success(f"✅ Successfully sent {sent_count} emergency alerts!")
+                        if failed_count > 0:
+                            st.error(f"❌ Failed to send {failed_count} alerts")
 
     elif processing_summary:
         st.info("No accidents detected in the video frames processed.")
