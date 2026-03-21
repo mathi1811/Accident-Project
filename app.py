@@ -917,6 +917,13 @@ def score_plate_candidate(text):
     if not cleaned:
         return -1
 
+    blocked_terms = {
+        "MID", "MIDDAY", "SOURCE", "CAMERA", "HORROR", "INDORE",
+        "TRUCK", "SMASHES", "SEVERAL", "MNID", "DAY", "SOURCEX"
+    }
+    if cleaned in blocked_terms:
+        return -10
+
     score = 0
     if 6 <= len(cleaned) <= 10:
         score += 4
@@ -993,6 +1000,26 @@ def extract_plate_focus_crops(rgb_frame, xyxy):
     return crops[:2]
 
 
+def extract_frame_plate_search_regions(rgb_frame):
+    """Return broad lower-frame regions that are more likely to contain vehicles than news overlays."""
+    h, w = rgb_frame.shape[:2]
+    regions = []
+
+    main_road = rgb_frame[int(h * 0.25):int(h * 0.9), :]
+    if main_road.size:
+        regions.append(main_road)
+
+    center_road = rgb_frame[int(h * 0.35):int(h * 0.88), int(w * 0.12):int(w * 0.88)]
+    if center_road.size:
+        regions.append(center_road)
+
+    lower_center = rgb_frame[int(h * 0.45):int(h * 0.92), int(w * 0.2):int(w * 0.8)]
+    if lower_center.size:
+        regions.append(lower_center)
+
+    return regions
+
+
 def scan_video_license_plates():
     """Scan stored video detection frames for license-plate text."""
     detection_results = st.session_state.get("video_detection_results", [])
@@ -1011,6 +1038,14 @@ def scan_video_license_plates():
             reader
         )
         crop_candidate_groups = []
+
+        for region in extract_frame_plate_search_regions(frame_rgb):
+            crop_candidate_groups.append(
+                detect_license_plate_text_with_reader(
+                    resize_image_for_ocr(Image.fromarray(region), max_side=640),
+                    reader
+                )
+            )
 
         prioritized_detections = sorted(
             result["detections"],
