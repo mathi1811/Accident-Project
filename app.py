@@ -33,7 +33,7 @@ if 'video_ocr_status' not in st.session_state:
 # Deployment debug tag (to ensure your current container is running latest code)
 st.markdown("""
 <div style='font-size:0.85rem; padding: 8px 12px; border-left: 4px solid #28a745; background: rgba(40, 167, 69, 0.1); margin-bottom:10px; color:#155724;'>
-    <strong>App version:</strong> a424dd2 (should align with latest main commit)
+    <strong>App version:</strong> 8b044cc (should align with latest main commit)
     — If this shows old commit, redeploy in Streamlit Cloud.
 </div>
 """, unsafe_allow_html=True)
