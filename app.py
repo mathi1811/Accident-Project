@@ -30,13 +30,7 @@ if 'video_upload_name' not in st.session_state:
 if 'video_ocr_status' not in st.session_state:
     st.session_state.video_ocr_status = ""
 
-# Deployment debug tag (to ensure your current container is running latest code)
-st.markdown("""
-<div style='font-size:0.85rem; padding: 8px 12px; border-left: 4px solid #28a745; background: rgba(40, 167, 69, 0.1); margin-bottom:10px; color:#155724;'>
-    <strong>App version:</strong> 8b044cc (should align with latest main commit)
-    — If this shows old commit, redeploy in Streamlit Cloud.
-</div>
-""", unsafe_allow_html=True)
+APP_VERSION = "365fc26"
 
 # Custom CSS for full-screen attractive styling with backgrounds
 st.markdown("""
@@ -731,6 +725,7 @@ def log_report(payload, result):
 
 
 st.markdown('<h1 class="title">Accident Detection & License Plate OCR</h1>', unsafe_allow_html=True)
+st.caption(f"App version: {APP_VERSION} | If this is not visible in Streamlit Cloud, the latest code is not deployed.")
 st.markdown('<p class="subtitle">Advanced AI-powered accident detection with automatic license plate recognition and emergency reporting</p>', unsafe_allow_html=True)
 
 # Add input type selection
