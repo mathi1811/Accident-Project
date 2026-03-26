@@ -1413,7 +1413,7 @@ elif uploaded_file is not None and input_type == "Video":
         st.markdown("### 📸 Accident Frames")
 
         for i, result in enumerate(detection_results):
-            with st.expander(f"🚨 Accident Frame {i+1} - Frame {result['frame_id']} @ {result['timestamp']:.2f}s"):
+            with st.expander(f"Accident frame {i+1} | Frame {result['frame_id']} | {result['timestamp']:.2f}s"):
                 col1, col2 = st.columns([1, 1])
 
                 with col1:
@@ -1445,7 +1445,7 @@ elif uploaded_file is not None and input_type == "Video":
 
             for result in st.session_state.video_ocr_results:
                 text_preview = ", ".join(text for text, _ in result.get("scene_text_candidates", [])[:2]) or "No extra text"
-                with st.expander(f"Frame {result['frame_id']} - Plate: {result['plate']}"):
+                with st.expander(f"Frame {result['frame_id']} | Plate {result['plate']}"):
                     st.markdown(f"**TEXTS FOUND IN VEDIO (Preview):** {text_preview}")
                     st.markdown(f"**NUMBER PLATE:** {result['plate']}")
                     if result['plate'] != "Not found":
