@@ -1408,7 +1408,10 @@ elif uploaded_file is not None and input_type == "Video":
         st.markdown("### 📸 Accident Frames")
 
         for i, result in enumerate(detection_results):
-            with st.expander(f"Accident frame {i+1} | Frame {result['frame_id']} | {result['timestamp']:.2f}s"):
+            with st.container():
+                st.markdown(
+                    f"**Accident frame {i+1}** | Frame `{result['frame_id']}` | `{result['timestamp']:.2f}s`"
+                )
                 col1, col2 = st.columns([1, 1])
 
                 with col1:
@@ -1423,6 +1426,8 @@ elif uploaded_file is not None and input_type == "Video":
                     st.markdown(f"• Frame ID: {result['frame_id']}")
                     st.markdown(f"• Timestamp: {result['timestamp']:.2f}s")
                     st.markdown(f"• Image shape: {result['frame'].shape}")
+
+                st.markdown("---")
 
         st.markdown("---")
         st.markdown("### 🔤 License Plate Recognition & Emergency Alerts")
