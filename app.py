@@ -1405,13 +1405,11 @@ elif uploaded_file is not None and input_type == "Video":
 
     if detection_results:
         st.success(f"Found {len(detection_results)} frames with accidents")
-        st.markdown("### 📸 Accident Frames")
+        st.subheader("Accident Frames")
 
         for i, result in enumerate(detection_results):
             with st.container():
-                st.markdown(
-                    f"**Accident frame {i+1}** | Frame `{result['frame_id']}` | `{result['timestamp']:.2f}s`"
-                )
+                st.write(f"Accident frame {i+1} | Frame {result['frame_id']} | {result['timestamp']:.2f}s")
                 col1, col2 = st.columns([1, 1])
 
                 with col1:
